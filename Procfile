@@ -1,1 +1,1 @@
-worker: python ./Qtkm_Awakened.py
+worker: python Qtkm_Awakened.py
