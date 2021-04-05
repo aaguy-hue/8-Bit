@@ -137,7 +137,7 @@ class Bot(commands.Bot):
             raise error
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    # logging.basicConfig(level=logging.INFO)
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())

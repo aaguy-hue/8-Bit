@@ -8,7 +8,6 @@ class ServerFun(commands.Cog):
     @commands.command(aliases=["const"])
     @commands.cooldown(1, 10800, commands.BucketType.guild)
     async def construct(self, ctx, item: str, *, args=None):
-        print("test")
         def respond(msg):
             return msg.author == ctx.author and msg.channel == ctx.channel
         
