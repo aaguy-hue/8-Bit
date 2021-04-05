@@ -14,7 +14,8 @@ class Connect4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    # Helper Function
+    # Helper Functions
+    @staticmethod
     def check_reaction_c4(emojis, player):
         def predicate(reaction, user):
             return str(reaction.emoji) in emojis and user.display_name==player
