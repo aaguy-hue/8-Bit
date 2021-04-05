@@ -26,6 +26,8 @@ class Connect4(commands.Cog):
         if opponent.id == ctx.author.id:
             await ctx.send("How desperate are you to win?")
             return
+        if opponent.bot:
+            await ctx.send("🤖 Sorry, you can't play connect 4 with bots except me. Please see [this link](https://www.youtube.com/watch?v=dQw4w9WgXcQ) for more information.")
 
         rows = 6
         cols = 7
