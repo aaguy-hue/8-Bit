@@ -1,177 +1,144 @@
-import discord
-import os
-import json
+"""Using SourSpoon discord.py template"""
 import asyncio
 import datetime
+import json
+import logging
+from pathlib import Path
+
+import discord
 from discord.ext import commands
-from dotenv import load_dotenv
-from connect4 import connect4 as connect4
 
-load_dotenv()
 
-# Store constants
-PREFIX = r"g "
-TOKEN = os.getenv("TOKEN")
-# Store variables
-games = []
+def config_load():
+    with open('data/config.json', 'r', encoding='utf-8') as doc:
+        #  Please make sure encoding is correct, especially after editing the config file
+        return json.load(doc)
 
-# Helper Functions
-def check_reaction_c4(emojis, player):
-    def predicate(reaction, user):
-        return str(reaction.emoji) in emojis and user.display_name==player
-    return predicate
 
-# The bot
-bot = commands.AutoShardedBot(command_prefix=commands.when_mentioned_or(PREFIX))
+async def run():
+    """
+    Where the bot gets started. If you wanted to create an database connection pool or other session for the bot to use,
+    it's recommended that you create it here and pass it to the bot as a kwarg.
+    """
 
-@bot.event
-async def on_ready():
-    print("heyyyy I'm back")
+    config = config_load()
+    bot = Bot(config=config,
+              description=config['description'])
+    try:
+        await bot.start(config['token'])
+    except KeyboardInterrupt:
+        await bot.logout()
 
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        pass
-    elif isinstance(error, commands.CommandOnCooldown):
-        hours, minutes, seconds = str(datetime.timedelta(seconds=round(error.retry_after))).split(":")
-        timeLeft = f"{hours} hours, {minutes} minutes, and {seconds} seconds"
-        await ctx.send(f"The people of QZ can construct another item in {timeLeft}.")
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f"You didn't specify the `{error.param.name}` argument.")
-    elif isinstance(error, commands.BadArgument):
-        await ctx.send("You didn't give a valid arugment.")
-    elif isinstance(error, commands.NotOwner):
-        await ctx.send("Yeah I don't think you're allowed to do that buddy.")
-    elif isinstance(error, commands.MissingPermissions):
-        missing_perms = ', '.join(error.missing_perms)
-        await ctx.send(f"You're missing the following permissions: {missing_perms}")
-    elif isinstance(error, commands.RoleNotFound):
-        await ctx.send("Uh kid that role doesn't exist in this server")
-    elif isinstance(error, commands.TooManyArguments):
-        await ctx.send("Whoa what's up with the wall of text? Stop giving me so many arugments!")
-    elif isinstance(error, commands.UnexpectedQuoteError):
-        await ctx.send("Sorry kiddo you gotta use the quotes to wrap the whole argument")
-    elif isinstance(error, commands.UserNotFound):
-        await ctx.send("I'm sorry but that user isn't in this server")
-    elif isinstance(error, commands.PrivateMessageOnly):
-        await ctx.send("You can only use this command in DMs")
-    elif isinstance(error, commands.UserInputError):
-        # this should never occur since UnexpectedQuoteError, MissingRequiredArgument, and BadArgument are there
-        await ctx.send("Uh what did you say?")
-    elif isinstance(error, commands.MissingRole):
-        await ctx.send(f"You need `{error.missing_role.name}` in order to use this command")
-    elif isinstance(error, commands.BotMissingRole):
-        await ctx.send(f"I need the `{error.missing_role.name}` role in order to run this command")
-    elif isinstance(error, commands.errors.BotMissingPermissions):
-        missing_perms = ', '.join(error.missing_perms)
-        await ctx.send(f"I need the following permissions to run this command: `{missing_perms}`")
-    else:
-        raise error
 
-@bot.event
-async def on_message(message):
-    # Process the commands
-    await bot.process_commands(message)
+class Bot(commands.Bot):
+    def __init__(self, **kwargs):
+        super().__init__(
+            command_prefix=self.get_prefix_,
+            description=kwargs.pop('description')
+        )
+        self.start_time = None
+        self.app_info = None
 
-@bot.command(aliases=["connect4", "connectFour"])
-async def c4(ctx, opponent: discord.Member):
-    if opponent.id == ctx.author.id:
-        await ctx.send("How desperate are you to win?")
-        return
+        self.loop.create_task(self.track_start())
+        self.loop.create_task(self.load_all_extensions())
 
-    rows = 6
-    cols = 7
-    gameData = {ctx.author.display_name: ctx.author, opponent.display_name: opponent}
-    game = connect4.Game(rows=rows, columns=cols, player1=ctx.author.display_name, player2=opponent.display_name, data=gameData)
-    boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessageInverse()
-    embed = discord.Embed(title="Connect Four", description=f"🔴 {ctx.author.display_name} | 🟡 {opponent.display_name}")
-    embed.add_field(name=f"{ctx.author.display_name}'s turn!", value=boardMessage, inline=False)
-    gameMessage = await ctx.send(embed=embed)
-    gameMessage = discord.utils.get(bot.cached_messages, id=gameMessage.id)
+    async def track_start(self):
+        """
+        Waits for the bot to connect to discord and then records the time.
+        Can be used to work out uptime.
+        """
+        await self.wait_until_ready()
+        self.start_time = datetime.datetime.utcnow()
+
+    async def get_prefix_(self, bot, message):
+        """
+        A coroutine that returns a prefix.
+        I have made this a coroutine just to show that it can be done. If you needed async logic in here it can be done.
+        A good example of async logic would be retrieving a prefix from a database.
+        """
+        prefix = ['g ']
+        return commands.when_mentioned_or(*prefix)(bot, message)
+
+    async def load_all_extensions(self):
+        """
+        Attempts to load all .py files in /cogs/ as cog extensions
+        """
+        await self.wait_until_ready()
+        await asyncio.sleep(1)  # ensure that on_ready has completed and finished printing
+        cogs = [x.stem for x in Path('cogs').glob('*.py')]
+        for extension in cogs:
+            try:
+                self.load_extension(f'cogs.{extension}')
+                print(f'loaded {extension}')
+            except Exception as e:
+                error = f'{extension}\n {type(e).__name__} : {e}'
+                print(f'failed to load extension {error}')
+            print('-' * 10)
+
+    async def on_ready(self):
+        """
+        This event is called every time the bot connects or resumes connection.
+        """
+        print('-' * 10)
+        self.app_info = await self.application_info()
+        print(f'Logged in as: {self.user.name}\n'
+              f'Using discord.py version: {discord.__version__}\n'
+              f'Owner: {self.app_info.owner}\n'
+              f'Template Maker: SourSpoon / Spoon#0001')
+        print('-' * 10)
+
+    async def on_message(self, message):
+        """
+        This event triggers on every message received by the bot. Including one's that it sent itself.
+        If you wish to have multiple event listeners they can be added in other cogs. All on_message listeners should
+        always ignore bots.
+        """
+        if message.author.bot:
+            return  # ignore all bots
+        await self.process_commands(message)
     
-    await gameMessage.add_reaction("1️⃣")
-    await gameMessage.add_reaction("2️⃣")
-    await gameMessage.add_reaction("3️⃣")
-    await gameMessage.add_reaction("4️⃣")
-    await gameMessage.add_reaction("5️⃣")
-    await gameMessage.add_reaction("6️⃣")
-    await gameMessage.add_reaction("7️⃣")
-    
-    gameIsGoing = True
-    while gameIsGoing:
-        currentPlayer = game.players[game.move_count%2]
-        opponentPlayer = game.players[~game.move_count%2]
-        try:
-            reaction, user = await bot.wait_for('reaction_add', check=check_reaction_c4(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"], currentPlayer.name), timeout=120.0)
-        except asyncio.TimeoutError:
-            await ctx.send(f"Oh well I guess {gameData[currentPlayer.name].mention} is just scared.")
-            return
+    async def on_command_error(self, ctx, error):
+        if isinstance(error, commands.CommandNotFound):
+            pass
+        elif isinstance(error, commands.CommandOnCooldown):
+            hours, minutes, seconds = str(datetime.timedelta(seconds=round(error.retry_after))).split(":")
+            timeLeft = f"{hours} hours, {minutes} minutes, and {seconds} seconds"
+            await ctx.send(f"The people of QZ can construct another item in {timeLeft}.")
+        elif isinstance(error, commands.MissingRequiredArgument):
+            await ctx.send(f"You didn't specify the `{error.param.name}` argument.")
+        elif isinstance(error, commands.BadArgument):
+            await ctx.send("You didn't give a valid arugment.")
+        elif isinstance(error, commands.NotOwner):
+            await ctx.send("Yeah I don't think you're allowed to do that buddy.")
+        elif isinstance(error, commands.MissingPermissions):
+            missing_perms = ', '.join(error.missing_perms)
+            await ctx.send(f"You're missing the following permissions: {missing_perms}")
+        elif isinstance(error, commands.RoleNotFound):
+            await ctx.send("Uh kid that role doesn't exist in this server")
+        elif isinstance(error, commands.TooManyArguments):
+            await ctx.send("Whoa what's up with the wall of text? Stop giving me so many arugments!")
+        elif isinstance(error, commands.UnexpectedQuoteError):
+            await ctx.send("Sorry kiddo you gotta use the quotes to wrap the whole argument")
+        elif isinstance(error, commands.UserNotFound):
+            await ctx.send("I'm sorry but that user isn't in this server")
+        elif isinstance(error, commands.PrivateMessageOnly):
+            await ctx.send("You can only use this command in DMs")
+        elif isinstance(error, commands.UserInputError):
+            # this should never occur since UnexpectedQuoteError, MissingRequiredArgument, and BadArgument are there
+            await ctx.send("Uh what did you say?")
+        elif isinstance(error, commands.MissingRole):
+            await ctx.send(f"You need `{error.missing_role.name}` in order to use this command")
+        elif isinstance(error, commands.BotMissingRole):
+            await ctx.send(f"I need the `{error.missing_role.name}` role in order to run this command")
+        elif isinstance(error, commands.errors.BotMissingPermissions):
+            missing_perms = ', '.join(error.missing_perms)
+            await ctx.send(f"I need the following permissions to run this command: `{missing_perms}`")
         else:
-            if reaction.emoji == "1️⃣":
-                col = 1
-            elif reaction.emoji == "2️⃣":
-                col = 2
-            elif reaction.emoji == "3️⃣":
-                col = 3
-            elif reaction.emoji == "4️⃣":
-                col = 4
-            elif reaction.emoji == "5️⃣":
-                col = 5
-            elif reaction.emoji == "6️⃣":
-                col = 6
-            elif reaction.emoji == "7️⃣":
-                col = 7
-            else:
-                await ctx.send("um...")
-                print(f"[ERROR] C4 Reaction Bypassed Check: {reaction.emoji}")
-                return
-            
-            if game.add_chip(col-1) == -1:
-                await ctx.send("very bad, that column is already filled, FOOL")
-                continue
-            for reaction in gameMessage.reactions:
-                users = await reaction.users().flatten()
-                [await reaction.remove(user) for user in users if not user.id == bot.user.id]
-            
-            if game.check_player_wins():
-                # Update the board to show that the player won
-                boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessageInverse()
-                embed.remove_field(0)
-                embed.add_field(name=f"{currentPlayer.name} wins!", value=boardMessage, inline=False)
-                await gameMessage.edit(embed=embed)
-                # Send a message that the player won, and break out of the loop.
-                await ctx.send(f"Whoaaaaa {gameData[currentPlayer.name].mention} won!")
-                gameIsGoing = False
-                break
-            
-            boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessageInverse()
-            embed.remove_field(0)
-            embed.add_field(name=f"{opponentPlayer.name}'s turn!", value=boardMessage, inline=False)
-            await gameMessage.edit(embed=embed)
+            raise error
 
-@bot.command(aliases=["const"])
-@commands.cooldown(1, 10800, commands.BucketType.guild)
-async def construct(ctx, item: str, *, args=None):
-    def respond(msg):
-        return msg.author == ctx.author and msg.channel == ctx.channel
-    
-    item = item.casefold()
-    if item == "channel":
-        await ctx.send("Sure, what do you want to call it?")
-        try:
-            channelName = await bot.wait_for("message", check=respond, timeout=180.0)
-            channelName = channelName.content
-        except asyncio.TimeoutError:
-            await ctx.send("Aaaaannnnndddd there goes your chance to make a channel.")
-            return
-        message = await ctx.send(f"*@*everyone do you want a new channel called `{channelName}`? If so, react with ✅.\nYou have 3 hours to vote. If at least half of you vote, then the channel will be constructed.")
-        await message.add_reaction("✅")
-        #ON REACTION CHECK IF HALF PEEPS ARE VOTED, AFTER 3 HOURS THEN STOP 
-    else:
-        await ctx.send("I can't understand you, talk properly. So far, I'll allow you to construct channels.")
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
 
-@bot.command()
-async def server(ctx):
-    await ctx.send("Scoring Server located at: https://MyQTKMScoringServer.ritm.repl.co")
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(run())
 
-bot.run(TOKEN)

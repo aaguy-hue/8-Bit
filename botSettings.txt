@@ -1,5 +1,0 @@
-#Explanation: line 1 - Explanation; line 2 - bot token; line 3 - server id; line 4 - valid users (everyone if anyone can use this bot); line 5 - valid channels (all if bot can be used on all channels)
-NzA1ODkwOTEyMjgyMzQ1NDcy.XqySLw.6Ns1jw8SPmxubHdalGrpNc-uSmQ
-705198077706895390
-aaguy-hue#9853
-all
