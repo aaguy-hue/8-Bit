@@ -6,6 +6,7 @@ sys.path.insert(0,parentdir)
 
 #### IMPORTS ####
 import discord
+import asyncio
 from discord.ext import commands
 from connect4 import connect4
 
