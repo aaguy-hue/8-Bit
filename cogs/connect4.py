@@ -35,7 +35,6 @@ class GameManager(set):
     
     def endGame(self, game):
         self.remove(game)
-        await ctx.send("The game has ended.")
     
     def getGame(self, player1):
         for game in self:
@@ -153,8 +152,9 @@ class Connect4(commands.Cog):
 
     @c4.command(name="endGame", aliases=["end", "quit"], pass_context=True, invoke_without_command=True)
     async def endGame(self, ctx):
-        print(self.games.endGame((self.games.getGame(ctx.author))))
         await ctx.send("k")
+        print(self.games.endGame((self.games.getGame(ctx.author))))
+        await ctx.send("The game has ended.")
 
 def setup(bot):
     bot.add_cog(Connect4(bot))
