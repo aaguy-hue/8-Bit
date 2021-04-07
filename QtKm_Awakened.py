@@ -107,7 +107,7 @@ class Bot(commands.Bot):
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f"You didn't specify the `{error.param.name}` argument.")
         elif isinstance(error, commands.BadArgument):
-            await ctx.send("You didn't give a valid arugment.")
+            await ctx.send("You didn't give a valid argument.")
         elif isinstance(error, commands.NotOwner):
             await ctx.send("Yeah I don't think you're allowed to do that buddy.")
         elif isinstance(error, commands.MissingPermissions):
@@ -116,7 +116,7 @@ class Bot(commands.Bot):
         elif isinstance(error, commands.RoleNotFound):
             await ctx.send("Uh kid that role doesn't exist in this server")
         elif isinstance(error, commands.TooManyArguments):
-            await ctx.send("Whoa what's up with the wall of text? Stop giving me so many arugments!")
+            await ctx.send("Whoa what's up with the wall of text? Stop giving me so many arguments!")
         elif isinstance(error, commands.UnexpectedQuoteError):
             await ctx.send("Sorry kiddo you gotta use the quotes to wrap the whole argument")
         elif isinstance(error, commands.UserNotFound):

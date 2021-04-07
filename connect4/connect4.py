@@ -8,6 +8,7 @@ class Game:
             columns - An integer representing how many columns are in the board. Defaults to 7.
             player1 - The name of player 1, defaults to Red
             player2 - The name of player 2, defaults to Yellow
+            data - extra stuff about the players
         """
         self.rows = rows
         self.columns = columns
@@ -15,12 +16,23 @@ class Game:
         self.move_count = 0
         self.data = data
         self.icon_mapping = {0: "🔴", 1: "🟡", 2: "🔵"}
+        self.data = data
         # Make a clear board
         # None = empty space
         # 0 = space has a player 1 (id 0) piece
         # 1 = space has a player 2 (id 1) piece
         # 2 = winning tiles
         self.clear()
+
+    def __hash__(self):
+        return hash((self.players[0], self.players[1]))
+    
+    def __eq__(self, other):
+        # One game per group of people
+        return isinstance(other, self.__class__) and self.players[0] == other.players[0] and self.players[1] == other.players[1]
+
+    def __ne__(self, other):
+        return not (isinstance(other, self.__class__) and self.players[0] == other.players[0] and self.players[1] == other.players[1])
 
     # Clear the board
     def clear(self):
@@ -94,6 +106,7 @@ class Game:
                 return row
         
         return -1
+    
 
 class Player:
     def __init__(self, id, name=None):

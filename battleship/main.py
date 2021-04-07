@@ -135,7 +135,7 @@ class Board:
     
     def print(self):
         print(self)
-       
+    
     def __iter__(self):
         self.n = 1
         return self

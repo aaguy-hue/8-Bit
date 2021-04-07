@@ -10,9 +10,43 @@ import asyncio
 from discord.ext import commands
 from connect4 import connect4
 
+class GameAlreadyExistsError(Exception): pass
+class NotAGameError(Exception): pass
+
+# https://stackoverflow.com/a/41281734
+class GameManager(set):
+    def add(self, value):
+        if not isinstance(value, connect4.Game):
+            raise NotAGameError('Value {!r} is not a game'.format(value))
+            return
+        # https://stackoverflow.com/a/17735466
+        if value in self or [True for other in self if not set(value.data.values()).isdisjoint(other.data.values())]:
+            raise GameAlreadyExistsError('Game {!r} already exists'.format(value))
+            return
+        super().add(value)
+
+    def update(self, values):
+        for value in values:
+            if value in self:
+                raise GameAlreadyExistsError('Game {!r} already exists'.format(error_values))
+            if not isinstance(value, connect4.Game):
+                raise NotAGameError('Value {!r} is not a game'.format(value))
+        super().update(values)
+    
+    def endGame(self, game):
+        self.remove(game)
+        await ctx.send("The game has ended.")
+    
+    def getGame(self, player1):
+        for game in self:
+            if player1 in game.data.values():
+                return game
+
+
 class Connect4(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.games = GameManager()
     
     # Helper Functions
     @staticmethod
@@ -21,18 +55,32 @@ class Connect4(commands.Cog):
             return str(reaction.emoji) in emojis and user.display_name==player
         return predicate
 
-    @commands.command(aliases=["connect4", "connectFour"])
+    @commands.group(name="c4", aliases=["connect4", "connectFour"], pass_context=True, invoke_without_command=True)
     async def c4(self, ctx, opponent: discord.Member):
         if opponent.id == ctx.author.id:
-            await ctx.send("How desperate are you to win?")
+            errorEmbed = discord.Embed(
+                title="<:GamilyError:829139949236256790> ERROR",
+                description="How desperate are you to win? Go to [this video](https://www.youtube.com/watch?v=srAzlF4VcCA) to find out."
+            )
+            await ctx.send(embed=errorEmbed)
             return
         if opponent.bot:
-            await ctx.send("🤖 Sorry, you can't play connect 4 with bots except me. Please see [this link](https://www.youtube.com/watch?v=dQw4w9WgXcQ) for more information.")
+            errorEmbed = discord.Embed(
+                title="<:GamilyError:829139949236256790> ERROR",
+                description="🤖 Sorry, you can't play connect 4 with bots other than me.\nPlease see [this video](https://www.youtube.com/watch?v=Hi3GSCwWc54) for more information."
+            )
+            await ctx.send(embed=errorEmbed)
+            return
 
         rows = 6
         cols = 7
         gameData = {ctx.author.display_name: ctx.author, opponent.display_name: opponent}
         game = connect4.Game(rows=rows, columns=cols, player1=ctx.author.display_name, player2=opponent.display_name, data=gameData)
+        try:
+            self.games.add(game)
+        except GameAlreadyExistsError:
+            await ctx.send("Sorry, you already have an ongoing game! Finish that game first, then you can make another.")
+            return
         boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessageInverse()
         embed = discord.Embed(title="Connect Four", description=f"🔴 {ctx.author.display_name} | 🟡 {opponent.display_name}")
         embed.add_field(name=f"{ctx.author.display_name}'s turn!", value=boardMessage, inline=False)
@@ -55,6 +103,7 @@ class Connect4(commands.Cog):
                 reaction, user = await self.bot.wait_for('reaction_add', check=self.check_reaction_c4(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"], currentPlayer.name), timeout=120.0)
             except asyncio.TimeoutError:
                 await ctx.send(f"Oh well I guess {gameData[currentPlayer.name].mention} is just scared.")
+                self.games.endGame(game)
                 return
             else:
                 if reaction.emoji == "1️⃣":
@@ -74,6 +123,7 @@ class Connect4(commands.Cog):
                 else:
                     await ctx.send("um...")
                     print(f"[ERROR] C4 Reaction Bypassed Check: {reaction.emoji}")
+                    self.games.endGame(game)
                     return
                 
                 if game.add_chip(col-1) == -1:
@@ -91,13 +141,20 @@ class Connect4(commands.Cog):
                     await gameMessage.edit(embed=embed)
                     # Send a message that the player won, and break out of the loop.
                     await ctx.send(f"Whoaaaaa {gameData[currentPlayer.name].mention} won!")
-                    gameIsGoing = False
-                    break
+                    self.games.endGame(game)
+                    return
                 
                 boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessageInverse()
                 embed.remove_field(0)
                 embed.add_field(name=f"{opponentPlayer.name}'s turn!", value=boardMessage, inline=False)
                 await gameMessage.edit(embed=embed)
+        self.games.endGame(game)
+        await ctx.send("How did you-")
+
+    @c4.command(name="endGame", aliases=["end", "quit"], pass_context=True, invoke_without_command=True)
+    async def endGame(self, ctx):
+        print(self.games.endGame((self.games.getGame(ctx.author))))
+        await ctx.send("k")
 
 def setup(bot):
     bot.add_cog(Connect4(bot))
