@@ -12,7 +12,7 @@ class Main(commands.Cog):
             "If you want to invite the bot to your server, you can use this link -> https://discord.com/api/oauth2/authorize?client_id=705890912282345472&permissions=511040&scope=bot"
         )
     
-    @commands.command(aliases=["botstat", "botstats"]):
+    @commands.command(aliases=["botstat", "botstats"])
     async def botinfo(self, ctx):
         servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `g invite` and press the link to invite me to more servers!"
 
