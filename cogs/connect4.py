@@ -126,7 +126,11 @@ class Connect4(commands.Cog):
                     return
                 
                 if game.add_chip(col-1) == -1:
-                    await ctx.send("very bad, that column is already filled, FOOL")
+                    errorEmbed = discord.Embed(
+                        title="<:GamilyError:829139949236256790> ERROR",
+                        description="Sorry, that column is already filled."
+                    )
+                    await ctx.send(embed=errorEmbed)
                     continue
                 for reaction in gameMessage.reactions:
                     users = await reaction.users().flatten()
