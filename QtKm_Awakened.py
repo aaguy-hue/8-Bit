@@ -39,6 +39,10 @@ class Bot(commands.Bot):
         self.start_time = None
         self.app_info = None
 
+        self.remove_command("help")
+        self.icon_url = "https://pixabay.com/images/id-1827840/"
+        self.support_server = "https://discord.gg/VPPrpmQ44q"
+        self.invite_link = "https://discord.com/api/oauth2/authorize?client_id=705890912282345472&permissions=511040&scope=bot"
         self.loop.create_task(self.track_start())
         self.loop.create_task(self.load_all_extensions())
 
@@ -49,7 +53,7 @@ class Bot(commands.Bot):
         """
         await self.wait_until_ready()
         self.start_time = datetime.datetime.utcnow()
-
+    
     async def get_prefix_(self, bot, message):
         """
         A coroutine that returns a prefix.
