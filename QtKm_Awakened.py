@@ -4,10 +4,18 @@ import datetime
 import json
 import logging
 from pathlib import Path
+import sys
 
 import discord
 from discord.ext import commands
 
+try:
+    dev_mode = sys.argv[1].lower() == 'dev'
+except IndexError:
+    dev_mode = False
+
+if dev_mode:
+    print("ACTIVATED IN DEVELOPER MODE. PREFIX IS 'gdev '.")
 
 def config_load():
     with open('data/config.json', 'r', encoding='utf-8') as doc:
@@ -25,7 +33,10 @@ async def run():
     bot = Bot(config=config,
               description=config['description'])
     try:
-        await bot.start(config['token'])
+        if dev_mode:
+            await bot.start(config['token-dev'])
+        else:
+            await bot.start(config['token'])
     except KeyboardInterrupt:
         await bot.logout()
 
@@ -42,7 +53,7 @@ class Bot(commands.Bot):
         self.remove_command("help")
         self.icon_url = "https://pixabay.com/images/id-1827840/"
         self.support_server = "https://discord.gg/VPPrpmQ44q"
-        self.invite_link = "https://discord.com/api/oauth2/authorize?client_id=705890912282345472&permissions=511040&scope=bot"
+        self.invite_link = "https://discord.com/api/oauth2/authorize?client_id=705890912282345472&permissions=388160&scope=bot"
         self.loop.create_task(self.track_start())
         self.loop.create_task(self.load_all_extensions())
 
@@ -60,8 +71,9 @@ class Bot(commands.Bot):
         I have made this a coroutine just to show that it can be done. If you needed async logic in here it can be done.
         A good example of async logic would be retrieving a prefix from a database.
         """
-        prefix = ['g ']
-        return commands.when_mentioned_or(*prefix)(bot, message)
+        with open('data\\prefixes.json', 'r') as f:
+            prefix = json.load(f).get(message.guild.id, 'gdev ' if dev_mode else 'g ')
+        return commands.when_mentioned_or(prefix)(bot, message)
 
     async def load_all_extensions(self):
         """
