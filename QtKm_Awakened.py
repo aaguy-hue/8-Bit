@@ -71,7 +71,7 @@ class Bot(commands.Bot):
         I have made this a coroutine just to show that it can be done. If you needed async logic in here it can be done.
         A good example of async logic would be retrieving a prefix from a database.
         """
-        with open('data\\prefixes.json', 'r') as f:
+        with open('data/prefixes.json', 'r') as f:
             prefix = json.load(f).get(message.guild.id, 'gdev ' if dev_mode else 'g ')
         return commands.when_mentioned_or(prefix)(bot, message)
 
