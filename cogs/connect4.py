@@ -55,6 +55,7 @@ class Connect4(commands.Cog):
         return predicate
 
     @commands.group(name="c4", aliases=["connect4", "connectFour"], pass_context=True, invoke_without_command=True)
+    @commands.bot_has_permissions(send_messages=True, manage_messages=True)
     async def c4(self, ctx, opponent: discord.Member):
         if opponent.id == ctx.author.id:
             errorEmbed = discord.Embed(
@@ -155,9 +156,18 @@ class Connect4(commands.Cog):
         await ctx.send("How did you-")
 
     @c4.command(name="endGame", aliases=["end", "quit"], pass_context=True, invoke_without_command=True)
+    @commands.bot_has_permissions(send_messages=True)
     async def endGame(self, ctx):
         await ctx.send("k")
-        print(self.games.endGame((self.games.getGame(ctx.author))))
+        game = self.games.getGame(ctx.author)
+        if game is None:
+            errorEmbed = discord.Embed(
+                title="<:GamilyError:829139949236256790> ERROR",
+                description="You're not in any games. For information on joining games, refer to [this video](https://www.youtube.com/watch?v=RkzhZsf4Dro)"
+            )
+            await ctx.send(embed=errorEmbed)
+            return
+        print(self.games.endGame(game))
         await ctx.send("The game has ended.")
 
 def setup(bot):

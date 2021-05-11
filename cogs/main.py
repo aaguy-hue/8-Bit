@@ -11,6 +11,7 @@ class Main(commands.Cog):
             self.bot_commands = json.load(f)
     
     @commands.command()
+    @commands.bot_has_permissions(send_messages=True)
     async def help(self, ctx, command: str = None):
         # Mostly copied from my other bot, CyberTools https://github.com/aaguy-hue/CyberToolsBot
 
@@ -54,12 +55,14 @@ class Main(commands.Cog):
         await ctx.send(embed=embed)
     
     @commands.command(aliases=["inv"])
+    @commands.bot_has_permissions(send_messages=True)
     async def invite(self, ctx):
         await ctx.send(
             f"If you want to invite the bot to your server, you can use this link -> {self.bot.invite_link}"
         )
     
     @commands.command(aliases=["botstat", "botstats"])
+    @commands.bot_has_permissions(send_messages=True)
     async def botinfo(self, ctx):
         servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `{ctx.prefix}invite` and press the link to invite me to more servers!"
 
