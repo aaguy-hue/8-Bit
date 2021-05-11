@@ -155,7 +155,7 @@ class Connect4(commands.Cog):
         self.games.endGame(game)
         await ctx.send("How did you-")
 
-    @c4.command(name="endGame", aliases=["end", "quit"], pass_context=True, invoke_without_command=True)
+    @c4.command(name="endGame", aliases=["end", "quit", "resign", "stop"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True)
     async def endGame(self, ctx):
         await ctx.send("k")
