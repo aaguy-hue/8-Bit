@@ -15,7 +15,11 @@ except IndexError:
     dev_mode = False
 
 if dev_mode:
+    default_prefix = "gdev "
     print("ACTIVATED IN DEVELOPER MODE. PREFIX IS 'gdev '.")
+else:
+    default_prefix = "g "
+    print("ACTIVATED IN PRODUCTION MODE. PREFIX IS 'g '.")
 
 def config_load():
     with open('data/config.json', 'r', encoding='utf-8') as doc:
@@ -49,11 +53,12 @@ class Bot(commands.Bot):
         )
         self.start_time = None
         self.app_info = None
-
+        
         self.remove_command("help")
-        self.icon_url = "https://pixabay.com/images/id-1827840/"
-        self.support_server = "https://discord.gg/VPPrpmQ44q"
-        self.invite_link = "https://discord.com/api/oauth2/authorize?client_id=705890912282345472&permissions=388160&scope=bot"
+        self.icon_url = "https://i.imgur.com/M3u0wYZ.png"
+        self.support_server = "https://dsc.gg/8bit-support"
+        self.invite_link = "https://dsc.gg/8bit"
+        self.voting_url = "https://top.gg/bot/705890912282345472/vote"
         self.loop.create_task(self.track_start())
         self.loop.create_task(self.load_all_extensions())
 
@@ -72,7 +77,7 @@ class Bot(commands.Bot):
         A good example of async logic would be retrieving a prefix from a database.
         """
         with open('data/prefixes.json', 'r') as f:
-            prefix = json.load(f).get(message.guild.id, 'gdev ' if dev_mode else 'g ')
+            prefix = json.load(f).get(message.guild.id, default_prefix)
         return commands.when_mentioned_or(prefix)(bot, message)
 
     async def load_all_extensions(self):

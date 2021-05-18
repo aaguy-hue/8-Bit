@@ -1,13 +1,15 @@
+import os
+import json
 import asyncio
 import discord
-import json
 import itertools
 from discord.ext import commands
 
 class Main(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-        with open("command_list.json", "r") as f:
+
+        with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data/command_list.json"), "r") as f:
             self.bot_commands = json.load(f)
     
     @commands.command()
@@ -26,7 +28,6 @@ class Main(commands.Cog):
                 embed.add_field(name=group["group"], value=groupcmds)
         else:
             info = list(itertools.chain(*(list(filter(lambda x: (x['command'] == command) or (command in x['aliases']), group["commands"])) for group in self.bot_commands)))
-            print(info)
             if (len(info) > 1):
                 await ctx.send(f"It seems that there are multiple commands with that name. Please report it in our (support server)[{self.bot.support_server}]")
                 return
@@ -48,28 +49,54 @@ class Main(commands.Cog):
             )
         embed.add_field(
             name="Links",
-            value=f"[Invite Me]({self.bot.invite_link}) - [Support Server]({self.bot.support_server})",
+            value=f"[Invite Me]({self.bot.invite_link}) - [Support Server]({self.bot.support_server}) - [Vote for Me]({self.bot.voting_url})",
             inline=False
         )
         embed.set_footer(text="Made by DJ Snowball", icon_url=f"{self.bot.icon_url}")
         await ctx.send(embed=embed)
     
-    @commands.command(aliases=["inv"])
+    @commands.command(aliases=["inv", "support"])
     @commands.bot_has_permissions(send_messages=True)
     async def invite(self, ctx):
-        await ctx.send(
-            f"If you want to invite the bot to your server, you can use this link -> {self.bot.invite_link}"
-        )
+        embed = discord.Embed(title="Invites", description="The links to invite the bot and join the support server.")
+        embed.add_field(name="Bot Invite", value=self.bot.invite_link)
+        embed.add_field(name="Support Server", value=self.bot.support_server)
+        await ctx.send(embed=embed)
     
     @commands.command(aliases=["botstat", "botstats"])
     @commands.bot_has_permissions(send_messages=True)
     async def botinfo(self, ctx):
         servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `{ctx.prefix}invite` and press the link to invite me to more servers!"
+        changelog = " - Tic Tac Toe has been added!\n - A rewrite of the connect four game behind the scenes to make it much faster and to allow to add AI"
+        comingsoon = " - Tic Tac Toe AI\n - Custom Prefixes"
 
-        embed = discord.Embed(title="Bot Statistics")
-        embed.add_field(name="Server Count", value=servercount, inline=True)
+        embed = discord.Embed(title="Bot Statistics") \
+            .add_field(name="Server Count", value=servercount, inline=False) \
+            .add_field(name="Changelog", value=changelog, inline=True) \
+            .add_field(name="Coming Soon", value=comingsoon, inline=True)
 
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def vote(self, ctx):
+        embed = discord.Embed(title="Vote", description=self.bot.voting_url)
+        await ctx.send(embed=embed)
+    
+    @commands.command()
+    async def prefix(self, ctx, prefix=None):
+        if prefix is None:
+            await ctx.send(f"My prefix is {self.bot.get_prefix_(self.bot, ctx.message)}!")
+        else:
+            if not ctx.author.guild_permissions.manage_guild:
+                ctx.send("You must have the \"Manage Server\" permission to change the server prefix. If you meant to get the prefix, don't pass in any arguments.")
+                return
+            
+            with open("../data/prefixes.json", "r+") as f:
+                file_data = json.load(f)
+                file_data.update({ctx.guild.id: prefix})
+                f.seek(0)
+                # convert back to json.
+                json.dump(file_data, f, indent=4)
 
 
 def setup(bot):

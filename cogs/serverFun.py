@@ -8,6 +8,7 @@ class ServerFun(commands.Cog):
     
     # @commands.command(aliases=["const"])
     # @commands.cooldown(1, 10800, commands.BucketType.guild)
+    # @commands.bot_has_permissions(send_messages=True, mention_everyone=True)
     # async def construct(self, ctx, item: str, *, args=None):
     #     def respond(msg):
     #         return msg.author == ctx.author and msg.channel == ctx.channel

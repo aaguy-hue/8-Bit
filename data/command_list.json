@@ -1,0 +1,92 @@
+[
+    {
+        "group": "Games",
+        "commands": [
+            {
+                "name": "connect4",
+                "command": "connect4",
+                "aliases": [
+                    "c4"
+                ],
+                "description": "Starts a game of connect four against another player.",
+                "syntax": "connect4 <mention>",
+                "arguments": "Takes in a parameter for a user's mention."
+            },
+            {
+                "name": "tictactoe",
+                "command": "tictactoe",
+                "aliases": [
+                    "TicTacToe"
+                ],
+                "description": "Starts a game of tic tac toe against another player.",
+                "syntax": "tictactoe <mention>",
+                "arguments": "Takes in a parameter for a user's mention."
+            }
+        ]
+    },
+    {
+        "group": "Other",
+        "commands": [
+            {
+                "name": "help",
+                "command": "help",
+                "aliases": [
+                    null
+                ],
+                "description": "Shows the manual for the bot.",
+                "syntax": "help [command]",
+                "arguments": "Takes in an optional parameter for what command you want to read about."
+            },
+            {
+                "name": "botinfo",
+                "command": "botinfo",
+                "aliases": [
+                    null
+                ],
+                "description": "Shows info about the bot.",
+                "syntax": "botinfo",
+                "arguments": "Takes in no parameters."
+            },
+            {
+                "name": "invite",
+                "command": "invite",
+                "aliases": [
+                    "support"
+                ],
+                "description": "Sends the link to invite the bot",
+                "syntax": "invite",
+                "arguments": "Takes in no parameters."
+            },
+            {
+                "name": "support",
+                "command": "support",
+                "aliases": [
+                    null
+                ],
+                "description": "Sends the link to get support.",
+                "syntax": "invite",
+                "arguments": "Takes in no parameters."
+            },
+            {
+                "name": "vote",
+                "command": "vote",
+                "aliases": [
+                    null
+                ],
+                "description": "Sends the link to vote for the bot.",
+                "syntax": "vote",
+                "arguments": "Takes in no parameters."
+            },
+            {
+                "name": "prefix",
+                "command": "prefix",
+                "aliases": [
+                    null
+                ],
+                "description": "Retrieves or sets a prefix. It requires administrative permissions to set the prefix.",
+                "syntax": "prefix [prefix]",
+                "arguments": "If no arguments are passed, returns the prefix. Otherwise, sets the prefix for the server."
+            }
+        ]
+    }
+]

@@ -15,7 +15,7 @@ class Game:
         self.players = [Player(0, name=player1), Player(1, name=player2)]
         self.move_count = 0
         self.data = data
-        self.icon_mapping = {0: "🔴", 1: "🟡", 2: "🔵"}
+        self.icon_mapping = {0: "🔴", 1: "🟡"}
         self.data = data
         # Make a clear board
         # None = empty space
@@ -36,77 +36,109 @@ class Game:
 
     # Clear the board
     def clear(self):
-        self.board = [[None for i in range(self.columns)] for j in range(self.rows)]
+        self.mask = 0
+        self.position = 0
     
     # Check in all directions if a player has won (4 connected)
-    def check_player_wins(self, player: "Player"=None) -> bool:
-        playerid = player.getid() if player else not self.move_count&1
-
+    def gameResults(self, player: "Player"=None) -> int:
+        """Gets who won.
+        Return True if the current player won, or return 0 if it's a tie, and -1 if no one won
+        """
+        # Horizontal check
+        m = self.position & (self.position >> 7)
+        if m & (m >> 14):
+            return True    # True = 1
+        
+        # Diagonal \
+        m = self.position & (self.position >> 6)
+        if m & (m >> 12):
+            return True    # True = 1
+        # Diagonal /
+        m = self.position & (self.position >> 8)
+        if m & (m >> 16):
+            return True    # True = 1
+        # Vertical
+        m = self.position & (self.position >> 1)
+        if m & (m >> 2):
+            return True    # True = 1
+        
+        # If the board is full (tie)
+        # 279258638311359 is the value if the board is filled and the sentinal row is empty
+        if self.mask >= 279258638311359:
+            return False    # False = 0
+        
+        # Nothing found
+        return -1
+    
+    def winning_tiles(self):
+        """Checks for winning the old and slow way in order to get the winning tiles.
+        
+        Only use this for displaying, as it's a bit slower.
+        
+        Returns the winning tiles or False if there was a tie, or otherwise None."""
+        playerid = self.move_count % 2
+        board = self.to_array()
+        
         # Check horizontal
         for c in range(self.columns-3):
             for r in range(self.rows):
-                if self.board[r][c] == playerid and self.board[r][c+1] == playerid and self.board[r][c+2] == playerid and self.board [r][c+3] == playerid:
-                    self.board[r][c] = 2
-                    self.board[r][c+1] = 2
-                    self.board[r][c+2] = 2
-                    self.board[r][c+3] = 2
-                    return True
-
+                if board[r][c] == playerid and board[r][c+1] == playerid and board[r][c+2] == playerid and board [r][c+3] == playerid:
+                    return [[r, c], [r, c+1], [r, c+2], [r, c+3]]
+        
         # Check vertical
         for c in range(self.columns):
             for r in range(self.rows-3):
-                if self.board[r][c] == playerid and self.board[r+1][c] == playerid and self.board[r+2][c] == playerid and self.board [r+3][c] == playerid:
-                    self.board[r][c] = 2
-                    self.board[r+1][c] = 2
-                    self.board[r+2][c] = 2
-                    self.board[r+3][c] = 2
-                    return True
-
+                if board[r][c] == playerid and board[r+1][c] == playerid and board[r+2][c] == playerid and board [r+3][c] == playerid:
+                    return [[r, c], [r+1, c], [r+2, c], [r+3, c]]
+        
         # Check positive diagonal
         for c in range(self.columns-3):
             for r in range(self.rows-3):
-                if self.board[r][c] == playerid and self.board[r+1][c+1] == playerid and self.board[r+2][c+2] == playerid and self.board[r+3][c+3] == playerid:
-                    self.board[r][c] = 3
-                    self.board[r+1][c+1] = 2
-                    self.board[r+2][c+2] = 2
-                    self.board[r+3][c+3] = 2
-                    return True
+                if board[r][c] == playerid and board[r+1][c+1] == playerid and board[r+2][c+2] == playerid and board[r+3][c+3] == playerid:
+                    return [[r, c], [r+1, c+1], [r+2, c+2], [r+3, c+3]]
 
         # Check negative diagonal
         for c in range(self.columns-3):
             for r in range(3, self.rows):
-                if self.board[r][c] == playerid and self.board[r-1][c+1] == playerid and self.board[r-2][c+2] == playerid and self.board[r-3][c+3] == playerid:
-                    self.board[r][c] = 3
-                    self.board[r-1][c+1] = 2
-                    self.board[r-2][c+2] = 2
-                    self.board[r-3][c+3] = 2
-                    return True
-
-        return False
+                if board[r][c] == playerid and board[r-1][c+1] == playerid and board[r-2][c+2] == playerid and board[r-3][c+3] == playerid:
+                    return [[r, c], [r-1, c+1], [r-2, c+2], [r-3, c+3]]
+        
+        # Tie
+        if self.mask >= 279258638311359:
+            return False
+        
+        # Nothing
+        return None
     
-    def generateMessage(self, icon_mapping: dict=None) -> str:
+    def generateMessage(self, winning_tiles=None, icon_mapping: dict=None) -> str:
         if icon_mapping is None:
             icon_mapping = self.icon_mapping
-        # https://stackoverflow.com/questions/33078554/mapping-dictionary-value-to-list
-        return '\n'.join([' '.join([icon_mapping.get(self.board[r][c], "⚫") for c in range(self.columns)]) for r in range(self.rows)])
-    
-    def generateMessageInverse(self, icon_mapping: dict=None) -> str:
-        """An alias for generateMessage to help with porting from the bitboard version"""
-        return self.generateMessage(icon_mapping)
-    # A player adds a new chip to a column of the board
-    # The first free row is calculated, if the column is
-    # full -1 is returns, otherwise the row to which the 
-    # chip has been added
-    def add_chip(self, column):
-        for row in range(self.rows-1, -1, -1):
-            cell_value = self.board[row][column]
-            if cell_value is None:
-                self.board[row][column] = self.move_count%2
-                self.move_count += 1
-                return row
+        if winning_tiles is None:
+            winning_tiles = []
         
-        return -1
+        board = self.to_array()
+        # https://stackoverflow.com/questions/33078554/mapping-dictionary-value-to-list
+        return '\n'.join([' '.join(["🔵" if [r,c] in winning_tiles else icon_mapping.get(board[r][c] if board[r][c] is None else not board[r][c], "⚫") for c in range(self.columns)]) for r in range(self.rows)])
     
+    # A player adds a new chip to a column of the board
+    # If the column is full -1 is returned
+    def add_chip(self, col):
+        # The position is now the board of the other player
+        new_mask = self.mask | (self.mask + (1 << (col*7)))
+        if new_mask == self.mask:
+            return -1
+        
+        self.mask = new_mask
+        self.position = self.position ^ self.mask
+        self.move_count += 1
+        
+    def to_array(self):
+        arrangement = [[5, 12, 19, 26, 33, 40, 47], [4, 11, 18, 25, 32, 39, 46], [3, 10, 17, 24, 31, 38, 45], [2, 9, 16, 23, 30, 37, 44], [1, 8, 15, 22, 29, 36, 43], [0, 7, 14, 21, 28, 35, 42]]
+        theMaskBytes = bin(self.mask)[2:].rjust(49, '0')
+        thePositionBytes = bin(self.position)[2:].rjust(49, '0')
+        thePlayer = self.move_count%2
+        # no idea why, but making the index for the bytes negative (and subtracting one since negative indexing starts from 1 rather than 0) works somehow
+        return [[None if not int(theMaskBytes[-(arrangement[r][c])-1]) else thePlayer if int(thePositionBytes[-(arrangement[r][c])-1]) else (not thePlayer) for c in range(self.columns)] for r in range(len(arrangement))]
 
 class Player:
     def __init__(self, id, name=None):
@@ -127,3 +159,18 @@ class Player:
             return "Red"
         else:
             return "Yellow"
+
+def predict_winner(game: Game, isMaximizing: bool):
+    pass
+
+def get_optimal_move(game: Game, isMaximizing: bool):
+    """Figures out the optimal next move (could be used for something like AI)
+    
+    Takes in 2 arguments:
+        game - An instance of the connect4.Game class
+        isMaximizing - A bool indicating whether the player is red or yellow (player 1 or 2). Important for implementation reasons.
+
+    Based on https://www.youtube.com/watch?v=trKjYdBASyQ.
+    Player 1 is the maximizing player, Player 2 is the minimizing player
+    """
+    return 1

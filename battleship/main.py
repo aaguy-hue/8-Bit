@@ -110,7 +110,7 @@ class Tile:
     
     def __str__(self) -> str:
         p = self.player
-        if self.player == None:
+        if self.player is None:
             p = ""
         elif self.player:
             p = ", 'Player 1'"
