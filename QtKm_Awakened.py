@@ -77,9 +77,9 @@ class Bot(commands.Bot):
         A good example of async logic would be retrieving a prefix from a database.
         """
         with open('data/prefixes.json', 'r') as f:
-            prefix = json.load(f).get(message.guild.id, default_prefix)
+            prefix = json.load(f).get(str(message.guild.id), default_prefix)
         return commands.when_mentioned_or(prefix)(bot, message)
-
+    
     async def load_all_extensions(self):
         """
         Attempts to load all .py files in /cogs/ as cog extensions

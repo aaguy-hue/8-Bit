@@ -85,18 +85,20 @@ class Main(commands.Cog):
     @commands.command()
     async def prefix(self, ctx, prefix=None):
         if prefix is None:
-            await ctx.send(f"My prefix is {self.bot.get_prefix_(self.bot, ctx.message)}!")
+            await ctx.send(f"My prefix is `{(await self.bot.get_prefix_(self.bot, ctx.message))[-1]}`!")
         else:
             if not ctx.author.guild_permissions.manage_guild:
-                ctx.send("You must have the \"Manage Server\" permission to change the server prefix. If you meant to get the prefix, don't pass in any arguments.")
+                await ctx.send("You must have the \"Manage Server\" permission to change the server prefix. If you meant to get the prefix, don't pass in any arguments.")
                 return
             
-            with open("../data/prefixes.json", "r+") as f:
+            with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data/prefixes.json"), "r+") as f:
                 file_data = json.load(f)
-                file_data.update({ctx.guild.id: prefix})
+                file_data.update({str(ctx.guild.id): prefix})
                 f.seek(0)
                 # convert back to json.
                 json.dump(file_data, f, indent=4)
+            
+            await ctx.send(f"The prefix has successfully been changed to {prefix}!")
 
 
 def setup(bot):

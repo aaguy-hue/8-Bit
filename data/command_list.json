@@ -16,7 +16,8 @@
                 "name": "tictactoe",
                 "command": "tictactoe",
                 "aliases": [
-                    "TicTacToe"
+                    "TicTacToe",
+                    "ttt"
                 ],
                 "description": "Starts a game of tic tac toe against another player.",
                 "syntax": "tictactoe <mention>",

@@ -33,12 +33,19 @@ class TicTacToe(commands.Cog):
         return predicate
     
     # Commands
-    @commands.group(name="tictactoe", aliases=["TicTacToe"], pass_context=True, invoke_without_command=True)
+    @commands.group(name="tictactoe", aliases=["TicTacToe", "ttt"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
-    async def tictactoe(self, ctx, opponent: discord.Member):        
+    async def ttt(self, ctx, opponent: discord.Member=None):        
         if ctx.author.id == opponent.id:
-            await ctx.send("🤦‍♂️")
+            await ctx.send("🤦‍♂️ You can't play against yourself.")
             return
+        elif opponent is None or opponent.id == self.bot.user.id:
+            await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy AI lol.")
+            return
+        elif opponent.bot:
+            await ctx.send("You can try to compete against robots, but don't expect a response 🤷‍♂️.")
+            return
+
         await ctx.send(f"YOU, {opponent.mention} have been challenged to tic tac toe by {ctx.author.mention}. Will you have the courage to face them? (y/n)")
         
         try:
@@ -92,7 +99,7 @@ class TicTacToe(commands.Cog):
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', check=self.check_reaction(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"], currentPlayer), timeout=240.0)
             except asyncio.TimeoutError:
-                await ctx.send(f"b r u h")
+                await ctx.send(f"oof, they're gone 😢")
                 self.games.endGame(game)
                 return
             if   reaction.emoji == "1️⃣": index = 1
@@ -129,6 +136,25 @@ class TicTacToe(commands.Cog):
                     await ctx.send(f"🎉 {players[currentPlayer].mention} wins!")
                 elif results == False:
                     await ctx.send(f"🤔 You guys tied, but I can't tell if you guys both suck or you're both decent.")
+    @ttt.command(name="ai", aliases=["bot", "singleplayer", "oneplayer", "single", "one"], pass_context=True, invoke_without_command=True)
+    @commands.bot_has_permissions(send_messages=True, manage_messages=True)
+    async def ai(self, ctx):
+        await ctx.invoke(self.bot.get_command('c4'), opponent=self.bot.user)
+    
+    @ttt.command(name="endGame", aliases=["end", "quit", "resign", "stop"], pass_context=True, invoke_without_command=True)
+    @commands.bot_has_permissions(send_messages=True)
+    async def endGame(self, ctx):
+        await ctx.send("k")
+        game = self.games.getGame(ctx.author)
+        if game is None:
+            errorEmbed = discord.Embed(
+                title="<:GamilyError:829139949236256790> ERROR",
+                description="You're not in any games. For information on joining games, refer to [this video](https://www.youtube.com/watch?v=RkzhZsf4Dro)"
+            )
+            await ctx.send(embed=errorEmbed)
+            return
+        self.games.endGame(game)
+        await ctx.send("The game has ended.")
 
 def setup(bot):
     bot.add_cog(TicTacToe(bot))
