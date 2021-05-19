@@ -63,7 +63,6 @@ class Game:
            7   |   8   |   9   """
         
         if self.board[index-1]:
-            print('failed index', index)
             return False
         
         self.board[index-1] = self.move_count % 2 + 1

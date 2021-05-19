@@ -36,11 +36,11 @@ class TicTacToe(commands.Cog):
     @commands.group(name="tictactoe", aliases=["TicTacToe", "ttt"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
     async def ttt(self, ctx, opponent: discord.Member=None):        
-        if ctx.author.id == opponent.id:
-            await ctx.send("🤦‍♂️ You can't play against yourself.")
-            return
-        elif opponent is None or opponent.id == self.bot.user.id:
+        if opponent is None or opponent.id == self.bot.user.id:
             await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy AI lol.")
+            return
+        elif ctx.author.id == opponent.id:
+            await ctx.send("🤦‍♂️ You can't play against yourself.")
             return
         elif opponent.bot:
             await ctx.send("You can try to compete against robots, but don't expect a response 🤷‍♂️.")
@@ -97,7 +97,7 @@ class TicTacToe(commands.Cog):
         while self.games.gameExists(game):
             currentPlayer = playerkeys[game.move_count%2]
             try:
-                reaction, user = await self.bot.wait_for('reaction_add', check=self.check_reaction(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣"], currentPlayer), timeout=240.0)
+                reaction, user = await self.bot.wait_for('reaction_add', check=self.check_reaction(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"], currentPlayer), timeout=240.0)
             except asyncio.TimeoutError:
                 await ctx.send(f"oof, they're gone 😢")
                 self.games.endGame(game)
