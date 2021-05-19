@@ -1,6 +1,5 @@
 import os
 import json
-import asyncio
 import discord
 import itertools
 from discord.ext import commands
