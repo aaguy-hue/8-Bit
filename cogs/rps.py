@@ -33,7 +33,7 @@ class RockPaperScissors(commands.Cog):
         comp_choice = random.choice(rpsGame)
         if user_choice == 'rock':
             if comp_choice == 'rock':
-                await ctx.send(f'Lel. We tied. It do be like dat sometimes tho.\nYour choice: {user_choice}\nMy choice: {comp_choice}')
+                await ctx.send(f'Lel. We tied. It do be like that sometimes though.\nYour choice: {user_choice}\nMy choice: {comp_choice}')
             elif comp_choice == 'paper':
                 await ctx.send(f'HA I won! You owe me a sprite!\nYour choice: {user_choice}\nMy choice: {comp_choice}')
             elif comp_choice == 'scissors':
@@ -41,9 +41,9 @@ class RockPaperScissors(commands.Cog):
 
         elif user_choice == 'paper':
             if comp_choice == 'rock':
-                await ctx.send(f'If only a rock was shot at a paper that was held with two clips and had nothing behind it. Welp ig it cant always be like that so gg.\nYour choice: {user_choice}\nMy choice: {comp_choice}')
+                await ctx.send(f'If only a rock was shot at a paper that was held with two clips and had nothing behind it. Welp I guess it cant always be like that so gg.\nYour choice: {user_choice}\nMy choice: {comp_choice}')
             elif comp_choice == 'paper':
-                await ctx.send(f'Bruh. We just tied. Ill prolly beat you next time tho tbh\nYour choice: {user_choice}\nMy choice: {comp_choice}')
+                await ctx.send(f'Bruh. We just tied. I\'ll probably beat you next time though \nYour choice: {user_choice}\nMy choice: {comp_choice}')
             elif comp_choice == 'scissors':
                 await ctx.send(f"Bippity boppity this win is now my property.\nYour choice: {user_choice}\nMy choice: {comp_choice}")
 
@@ -53,7 +53,7 @@ class RockPaperScissors(commands.Cog):
             elif comp_choice == 'paper':
                 await ctx.send(f'MASAKA, you just used your secret move!\nYour choice: {user_choice}\nMy choice: {comp_choice}')
             elif comp_choice == 'scissors':
-                await ctx.send(f"We just tied but ik i won so lol 😏.\nYour choice: {user_choice}\nMy choice: {comp_choice}")
+                await ctx.send(f"We just tied but I know I won so lol 😏.\nYour choice: {user_choice}\nMy choice: {comp_choice}")
 
 def setup(bot):
     bot.add_cog(RockPaperScissors(bot))
