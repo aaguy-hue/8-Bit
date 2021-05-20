@@ -41,6 +41,9 @@ class Connect4(commands.Cog):
             errorEmbed = discord.Embed(
                 title="<:GamilyError:829139949236256790> ERROR",
                 description="How desperate are you to win? Go to [this video](https://www.youtube.com/watch?v=srAzlF4VcCA) to find out."
+            ).set_footer(
+                text="Made by DJ Snowball",
+                icon_url=self.bot.icon_url
             )
             await ctx.send(embed=errorEmbed)
             return
@@ -48,6 +51,9 @@ class Connect4(commands.Cog):
             errorEmbed = discord.Embed(
                 title="<:GamilyError:829139949236256790> ERROR",
                 description="🤖 Sorry, you can't play connect 4 with bots other than me.\nPlease see [this video](https://www.youtube.com/watch?v=Hi3GSCwWc54) for more information."
+            ).set_footer(
+                text="Made by DJ Snowball",
+                icon_url=self.bot.icon_url
             )
             await ctx.send(embed=errorEmbed)
             return
@@ -112,6 +118,9 @@ class Connect4(commands.Cog):
                 errorEmbed = discord.Embed(
                     title="<:GamilyError:829139949236256790> ERROR",
                     description="Sorry, that column is already filled."
+                ).set_footer(
+                    text="Made by DJ Snowball",
+                    icon_url=self.bot.icon_url
                 )
                 await ctx.send(embed=errorEmbed)
                 continue
@@ -150,7 +159,9 @@ class Connect4(commands.Cog):
     @c4.command(name="ai", aliases=["bot", "singleplayer", "oneplayer", "single", "one"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
     async def ai(self, ctx):
-        await ctx.invoke(self.bot.get_command('c4'), opponent=self.bot.user)
+        await ctx.send("This command is not implemented yet.")
+        return
+        # await ctx.invoke(self.bot.get_command('c4'), opponent=self.bot.user)
     
     @c4.command(name="endGame", aliases=["end", "quit", "resign", "stop"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True)
@@ -161,6 +172,9 @@ class Connect4(commands.Cog):
             errorEmbed = discord.Embed(
                 title="<:GamilyError:829139949236256790> ERROR",
                 description="You're not in any games. For information on joining games, refer to [this video](https://www.youtube.com/watch?v=RkzhZsf4Dro)"
+            ).set_footer(
+                text="Made by DJ Snowball",
+                icon_url=self.bot.icon_url
             )
             await ctx.send(embed=errorEmbed)
             return

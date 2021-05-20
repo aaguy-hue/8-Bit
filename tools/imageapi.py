@@ -26,7 +26,7 @@ def PILupload(imgBytes) -> dict:
             file_data.update({img_hashed: response})
             f.seek(0)
             # convert back to json.
-            json.dump(file_data, f)
+            json.dump(file_data, f, separators=(',', ':'))
         else:
             response = cachedImg
     

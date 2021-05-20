@@ -21,6 +21,9 @@ class Main(commands.Cog):
                 title="Help",
                 description=f"**PREFIX: {ctx.prefix}**\nUse `{ctx.prefix}help <command>` for more information on a command.",
                 color=ctx.author.color
+            ).set_footer(
+                text="Made by DJ Snowball",
+                icon_url=self.bot.icon_url
             )
             for group in self.bot_commands:
                 groupcmds = ' '.join((f"`{x['name']}`" for x in group["commands"]))
@@ -45,21 +48,30 @@ class Main(commands.Cog):
                 title=info['command'],
                 description=f"**SYNTAX**: {syntax}\n**ALIASES**: {aliases}\n\n{arguments}\n{description}",
                 color=ctx.author.color
+            ).add_field(
+                name="Links",
+                value=f"[Invite Me]({self.bot.invite_link}) - [Support Server]({self.bot.support_server}) - [Vote for Me]({self.bot.voting_url})",
+                inline=False
             )
-        embed.add_field(
-            name="Links",
-            value=f"[Invite Me]({self.bot.invite_link}) - [Support Server]({self.bot.support_server}) - [Vote for Me]({self.bot.voting_url})",
-            inline=False
-        )
         embed.set_footer(text="Made by DJ Snowball", icon_url=f"{self.bot.icon_url}")
         await ctx.send(embed=embed)
     
     @commands.command(aliases=["inv", "support"])
     @commands.bot_has_permissions(send_messages=True)
     async def invite(self, ctx):
-        embed = discord.Embed(title="Invites", description="The links to invite the bot and join the support server.")
-        embed.add_field(name="Bot Invite", value=self.bot.invite_link)
-        embed.add_field(name="Support Server", value=self.bot.support_server)
+        embed = discord.Embed(
+            title="Invites", 
+            description="The links to invite the bot and join the support server."
+        ).add_field(
+            name="Bot Invite", 
+            value=self.bot.invite_link
+        ).add_field(
+            name="Support Server", 
+            value=self.bot.support_server
+        ).set_footer(
+            text="Made by DJ Snowball",
+            icon_url=self.bot.icon_url
+        )
         await ctx.send(embed=embed)
     
     @commands.command(aliases=["botstat", "botstats"])
@@ -69,16 +81,36 @@ class Main(commands.Cog):
         changelog = " - Tic Tac Toe has been added!\n - A rewrite of the connect four game behind the scenes to make it much faster and to allow to add AI"
         comingsoon = " - Tic Tac Toe AI\n - Custom Prefixes"
 
-        embed = discord.Embed(title="Bot Statistics") \
-            .add_field(name="Server Count", value=servercount, inline=False) \
-            .add_field(name="Changelog", value=changelog, inline=True) \
-            .add_field(name="Coming Soon", value=comingsoon, inline=True)
+        embed = discord.Embed(
+            title="Bot Statistics"
+        ).add_field(
+            name="Server Count", 
+            value=servercount, 
+            inline=False
+        ).add_field(
+            name="Changelog",
+            value=changelog,
+            inline=True
+        ).add_field(
+            name="Coming Soon",
+            value=comingsoon,
+            inline=True
+        ).set_footer(
+            text="Made by DJ Snowball",
+            icon_url=self.bot.icon_url
+        )
 
         await ctx.send(embed=embed)
 
     @commands.command()
     async def vote(self, ctx):
-        embed = discord.Embed(title="Vote", description=self.bot.voting_url)
+        embed = discord.Embed(
+            title="Vote", 
+            description=self.bot.voting_url
+        ).set_footer(
+            text="Made by DJ Snowball",
+            icon_url=self.bot.icon_url
+        )
         await ctx.send(embed=embed)
     
     @commands.command()
@@ -95,7 +127,7 @@ class Main(commands.Cog):
                 file_data.update({str(ctx.guild.id): prefix})
                 f.seek(0)
                 # convert back to json.
-                json.dump(file_data, f, indent=4)
+                json.dump(file_data, f, separators=(',', ':'))
             
             await ctx.send(f"The prefix has successfully been changed to {prefix}!")
 

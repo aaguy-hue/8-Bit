@@ -78,7 +78,12 @@ class TicTacToe(commands.Cog):
             name=f"{playerkeys[0]}'s turn!",
             value="** **",
             inline=False
-        ).set_image(url=image['data']['link'])
+        ).set_image(
+            url=image['data']['link']
+        ).set_footer(
+            text="Made by DJ Snowball",
+            icon_url=self.bot.icon_url
+        )
         gameMessage = await ctx.send(embed=embed)
         gameMessage = discord.utils.get(self.bot.cached_messages, id=gameMessage.id)
 
@@ -152,6 +157,9 @@ class TicTacToe(commands.Cog):
             errorEmbed = discord.Embed(
                 title="<:GamilyError:829139949236256790> ERROR",
                 description="You're not in any games. For information on joining games, refer to [this video](https://www.youtube.com/watch?v=RkzhZsf4Dro)"
+            ).set_footer(
+                text="Made by DJ Snowball",
+                icon_url=self.bot.icon_url
             )
             await ctx.send(embed=errorEmbed)
             return
