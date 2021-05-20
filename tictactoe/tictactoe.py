@@ -74,9 +74,9 @@ class Game:
         player = not self.move_count % 2
         playerlst = [player+1]*3
         # Horizontal (-)
-        if playerlst in [self.board[0], self.board[1], self.board[2]]:
+        if playerlst == [self.board[0], self.board[1], self.board[2]]:
             return 0,1,2
-        elif playerlst in [self.board[3], self.board[4], self.board[5]]:
+        elif playerlst == [self.board[3], self.board[4], self.board[5]]:
             return 3,4,5
         elif playerlst == [self.board[6], self.board[7], self.board[8]]:
             return 6,7,8
