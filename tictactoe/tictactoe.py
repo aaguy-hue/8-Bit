@@ -67,7 +67,6 @@ class Game:
         
         self.board[index-1] = self.move_count % 2 + 1
         self.move_count += 1
-
         return True
     
     def game_results(self):

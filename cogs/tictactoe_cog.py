@@ -133,8 +133,10 @@ class TicTacToe(commands.Cog):
                 await gameMessage.edit(embed=embed)
 
                 if results:
+                    self.games.endGame(game)
                     await ctx.send(f"🎉 {players[currentPlayer].mention} wins!")
                 elif results == False:
+                    self.games.endGame(game)
                     await ctx.send(f"🤔 You guys tied, but I can't tell if you guys both suck or you're both decent.")
     @ttt.command(name="ai", aliases=["bot", "singleplayer", "oneplayer", "single", "one"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
