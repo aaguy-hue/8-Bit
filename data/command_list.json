@@ -22,6 +22,16 @@
                 "description": "Starts a game of tic tac toe against another player.",
                 "syntax": "tictactoe <mention>",
                 "arguments": "Takes in a parameter for a user's mention."
+            },
+            {
+                "name": "rockpaperscissors",
+                "command": "rockpaperscissors",
+                "aliases": [
+                    "rps"
+                ],
+                "description": "Plays a game of rock paper scissors versus an AI.",
+                "syntax": "rockpaperscissors",
+                "arguments": "Takes in no parameters."
             }
         ]
     },
