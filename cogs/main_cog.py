@@ -79,7 +79,7 @@ class Main(commands.Cog):
     async def botinfo(self, ctx):
         servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `{ctx.prefix}invite` and press the link to invite me to more servers!"
         changelog = " - Tic Tac Toe has been added!\n - A rewrite of the connect four game behind the scenes to make it much faster and to allow to add AI"
-        comingsoon = " - Tic Tac Toe AI\n - Custom Prefixes"
+        comingsoon = " - Tic Tac Toe AI\n - Minecraft Clone"
 
         embed = discord.Embed(
             title="Bot Statistics"
