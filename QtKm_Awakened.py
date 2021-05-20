@@ -100,7 +100,7 @@ class Bot(commands.Bot):
         """
         This event is called every time the bot connects or resumes connection.
         """
-        await self.change_presence(activity=discord.Streaming('g help | Tic Tac Toe AI coming soon!'))
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='g help | Tic Tac Toe AI coming soon!'))
 
         print('-' * 10)
         self.app_info = await self.application_info()
