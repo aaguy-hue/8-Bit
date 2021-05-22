@@ -118,7 +118,7 @@ class Main(commands.Cog):
         if prefix is None:
             await ctx.send(f"My prefix is `{(await self.bot.get_prefix_(self.bot, ctx.message))[-1]}`!")
         else:
-            await ctx.send(f"Unfortunately, setting the prefix has been enabled due to technical difficulties. Join the support server for more info <{self.bot.support_server}>")
+            await ctx.send(f"Unfortunately, setting the prefix has been disabled due to technical difficulties. Join the support server for more info <{self.bot.support_server}>")
             # if not ctx.author.guild_permissions.manage_guild:
             #     await ctx.send("You must have the \"Manage Server\" permission to change the server prefix. If you meant to get the prefix, don't pass in any arguments.")
             #     return
