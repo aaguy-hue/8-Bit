@@ -118,18 +118,20 @@ class Main(commands.Cog):
         if prefix is None:
             await ctx.send(f"My prefix is `{(await self.bot.get_prefix_(self.bot, ctx.message))[-1]}`!")
         else:
-            if not ctx.author.guild_permissions.manage_guild:
-                await ctx.send("You must have the \"Manage Server\" permission to change the server prefix. If you meant to get the prefix, don't pass in any arguments.")
-                return
+            await ctx.send(f"Unfortunately, setting the prefix has been enabled due to technical difficulties. Join the support server for more info <{self.bot.support_server}>")
+            # if not ctx.author.guild_permissions.manage_guild:
+            #     await ctx.send("You must have the \"Manage Server\" permission to change the server prefix. If you meant to get the prefix, don't pass in any arguments.")
+            #     return
             
-            with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data/prefixes.json"), "r+") as f:
-                file_data = json.load(f)
-                file_data.update({str(ctx.guild.id): prefix})
-                f.seek(0)
-                # convert back to json.
-                json.dump(file_data, f, separators=(',', ':'))
+            # with open(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data/prefixes.json"), "r+") as f:
+            #     file_data = json.load(f)
+            #     file_data.update({str(ctx.guild.id): prefix})
+            #     f.seek(0)
+            #     print(file_data)
+            #     # convert back to json.
+            #     f.write(json.dumps(file_data))
             
-            await ctx.send(f"The prefix has successfully been changed to {prefix}!")
+            # await ctx.send(f"The prefix has successfully been changed to `{prefix}`!")
 
 
 def setup(bot):
