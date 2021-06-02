@@ -70,7 +70,7 @@ class Connect4(commands.Cog):
             await ctx.send(embed=errorEmbed)
             return
 
-        await ctx.send(f"YOU, {opponent.mention} have been challenged to tic tac toe by {ctx.author.mention}. Will you have the courage to face them? (y/n)")
+        await ctx.send(f"YOU, {opponent.mention} have been challenged to connect four by {ctx.author.mention}. Will you have the courage to face them? (y/n)")
         
         try:
             accepted = await self.bot.wait_for('message', timeout=120, check=self.check(opponent, ctx.channel))
