@@ -16,10 +16,11 @@ class Main(commands.Cog):
     async def help(self, ctx, command: str = None):
         # Mostly copied from my other bot, CyberTools https://github.com/aaguy-hue/CyberToolsBot
 
+        daPrefix = (await self.bot.get_prefix_(self.bot, ctx.message))[-1]
         if command is None:
             embed = discord.Embed(
                 title="Help",
-                description=f"**PREFIX: {ctx.prefix}**\nUse `{ctx.prefix}help <command>` for more information on a command.",
+                description=f"**PREFIX: {daPrefix}**\nUse `{daPrefix}help <command>` for more information on a command.",
                 color=ctx.author.color
             ).set_footer(
                 text="Made by DJ Snowball",
@@ -37,7 +38,7 @@ class Main(commands.Cog):
                 await ctx.send(f"The command \"{command}\" wasn't found. Make sure you typed it in correctly, and retry.")
                 return
             info = info[0]
-            syntax = f"{ctx.prefix}{info['syntax']}"
+            syntax = f"{daPrefix}{info['syntax']}"
             arguments = info['arguments']
             description = info['description']
             if (info['aliases'] == [None]):
@@ -74,15 +75,28 @@ class Main(commands.Cog):
         )
         await ctx.send(embed=embed)
     
+    @commands.command(aliases=["latency"], help="Checks how fast the bot's connection to discord is.")
+    @commands.bot_has_permissions(send_messages=True)
+    async def ping(self, ctx):
+        await ctx.send(f'My ping is {round(self.bot.latency, 1)}!')
+    
     @commands.command(aliases=["botstat", "botstats"])
     @commands.bot_has_permissions(send_messages=True)
     async def botinfo(self, ctx):
-        servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `{ctx.prefix}invite` and press the link to invite me to more servers!"
+        daPrefix = (await self.bot.get_prefix_(self.bot, ctx.message))[-1]
+        servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `{daPrefix}invite` and press the link to invite me to more servers!"
         changelog = " - Tic Tac Toe has been added!\n - A rewrite of the connect four game behind the scenes to make it much faster and to allow to add AI"
-        comingsoon = " - Tic Tac Toe AI\n - Minecraft Clone"
-
+        comingsoon = " - Tic Tac Toe AI\n - 2D Minecraft Clone"
+        
         embed = discord.Embed(
-            title="Bot Statistics"
+            title="Bot Information"
+        ).add_field(
+            name="Name",
+            value=f"My name is {self.bot.user.display_name}!",
+            inline=False
+        ).add_field(
+            name="Prefix",
+            value=f"My prefix is `{daPrefix}`!\nRun {daPrefix}help for more info!`"
         ).add_field(
             name="Server Count", 
             value=servercount, 

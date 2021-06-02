@@ -1,4 +1,5 @@
 # Code to import from parent directory https://stackoverflow.com/a/11158224
+from battleship.img import board
 import os, sys, inspect
 currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 parentdir = os.path.dirname(currentdir)
@@ -73,7 +74,7 @@ class Connect4(commands.Cog):
         except GameAlreadyExistsError:
             await ctx.send("Sorry, you or your opponent already have an ongoing game! Finish that game first, then you can start another.")
             return
-        boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessage()
+        boardMessage = f"1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n{game.generateMessage()}"
         embed = discord.Embed(title="Connect Four", description=f"🔴 {ctx.author.display_name} | 🟡 {opponent.display_name}")
         embed.add_field(name=f"{ctx.author.display_name}'s turn!", value=boardMessage, inline=False)
         gameMessage = await ctx.send(embed=embed)
@@ -131,7 +132,7 @@ class Connect4(commands.Cog):
             result = game.winning_tiles()
             if result:
                 # Update the board to show that the player won
-                boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessage(winning_tiles=result)
+                boardMessage = f"1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n{game.generateMessage(winning_tiles=result)}"
                 embed.remove_field(0)
                 embed.add_field(name=f"{currentPlayer.name} wins!", value=boardMessage, inline=False)
                 await gameMessage.edit(embed=embed)

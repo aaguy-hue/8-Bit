@@ -1,12 +1,20 @@
 ##### IMPORTS #####
-import io
 import os
+import sys
+import io
 from PIL import Image, ImageFont, ImageDraw
 
+sys.setrecursionlimit(4000)
+
 class Game:
+    # Scoring for AI
+    SCORE_WIN = 1
+    SCORE_TIE = 0
+    SCORE_LOSE = -1
+    
     TILE_BASE_COORDS = (10, 10)
     STAR_BASE_COORDS = (5, 5)
-
+    
     def __init__(self, p1: str="Player 1", p2: str="Player 2", data: dict=None):
         self.board = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.players = [p1, p2]
@@ -69,6 +77,25 @@ class Game:
         self.move_count += 1
         return True
     
+    def undo_move_index(self, index) -> bool:
+        """Undoes a move in the tic tac toe game by specifying an index.
+        
+        Takes in a parameter, index, which represents the index of a spot.
+        Returns a boolean stating whether the undo operation was valid.
+        
+           1   |   2   |   3   
+        -----------------------
+           4   |   5   |   6   
+        -----------------------
+           7   |   8   |   9   """
+        
+        if not self.board[index-1]:
+            return False
+        
+        self.board[index-1] = 0
+        self.move_count -= 1
+        return True
+        
     def game_results(self):
         """Returns the winning tiles, which is None if the game isn't won. Returns False if the game is a tie."""
         player = not self.move_count % 2
@@ -103,6 +130,41 @@ class Game:
         
         return None
     
+    def results_value(self) -> int:
+        """Returns 0 for tie, 1 for win, -1 for lose, and None for no ending yet."""
+        # Current player
+        player = not self.move_count % 2
+        playerlst = [player+1]*3
+        if playerlst == [self.board[0], self.board[1], self.board[2]] or \
+           playerlst == [self.board[3], self.board[4], self.board[5]] or \
+           playerlst == [self.board[6], self.board[7], self.board[8]] or \
+           playerlst == [self.board[0], self.board[3], self.board[6]] or \
+           playerlst == [self.board[1], self.board[4], self.board[7]] or \
+           playerlst == [self.board[2], self.board[5], self.board[8]] or \
+           playerlst == [self.board[0], self.board[4], self.board[8]] or \
+           playerlst == [self.board[2], self.board[4], self.board[6]]:
+            return 1
+        
+        # Opponent player
+        opponent = self.move_count % 2
+        opponentlst = [opponent+1]*3
+        if opponentlst == [self.board[0], self.board[1], self.board[2]] or \
+           opponentlst == [self.board[3], self.board[4], self.board[5]] or \
+           opponentlst == [self.board[6], self.board[7], self.board[8]] or \
+           opponentlst == [self.board[0], self.board[3], self.board[6]] or \
+           opponentlst == [self.board[1], self.board[4], self.board[7]] or \
+           opponentlst == [self.board[2], self.board[5], self.board[8]] or \
+           opponentlst == [self.board[0], self.board[4], self.board[8]] or \
+           opponentlst == [self.board[2], self.board[4], self.board[6]]:
+            return -1
+
+        # If no one wins, and the board is full
+        if all(self.board):
+            return 0
+        
+        return None
+
+    
     def generate_image(self, winning_tiles=None) -> bytes:
         """Returns bytes in a png format for the board.
         
@@ -127,3 +189,47 @@ class Game:
             output.seek(0)
             return output.getvalue()
     
+    def move_valid(self, index) -> bool:
+        """Returns a bool stating whether a move is valid or not"""
+        return not self.board[index-1]
+    
+    def best_move(self) -> int:
+        best_score = float("-inf")
+        move = None
+        for i in range(1,10):
+            if self.board[i-1]: continue
+            self.make_move_index(i)
+            score = self.minimax(0, False)
+            print("board", self.board, "score", score)
+            self.undo_move_index(i)
+            if score > best_score:
+                best_score = score
+                move = i
+        
+        return move
+    
+    def minimax(self, depth: int, maximizing: bool):
+        """Used this video as a reference: https://www.youtube.com/watch?v=trKjYdBASyQ"""
+        result = self.results_value()
+        # print("board", self.board, "result", result)
+        if result != None:
+            return result
+        
+        if maximizing:
+            best_score = float("-inf")
+            for i in range(1,10):
+                if self.board[i-1]: continue
+                self.make_move_index(i)
+                score = self.minimax(depth+1, False)
+                self.undo_move_index(i)
+                best_score = max(score, best_score)
+        else:
+            best_score = float("inf")
+            for i in range(1,10):
+                if self.board[i-1]: continue
+                self.make_move_index(i)
+                score = self.minimax(depth+1, True)
+                self.undo_move_index(i)
+                best_score = min(score, best_score)
+            
+        return best_score

@@ -153,12 +153,14 @@ class Bot(commands.Bot):
             await ctx.send(f"You need `{error.missing_role.name}` in order to use this command")
         elif isinstance(error, commands.BotMissingRole):
             await ctx.send(f"I need the `{error.missing_role.name}` role in order to run this command")
+        elif isinstance(error, commands.errors.BotMissingPermissions):
+            if "send_messages" in error.missing_perms:
+                pass
+            missing_perms = ', '.join(error.missing_perms)
+            await ctx.send(f"I need the following permissions to run this command: `{missing_perms}`")
         elif isinstance(error, discord.Forbidden):
             # We are not allowed to do this
             pass
-        elif isinstance(error, commands.errors.BotMissingPermissions):
-            missing_perms = ', '.join(error.missing_perms)
-            await ctx.send(f"I need the following permissions to run this command: `{missing_perms}`")
         else:
             raise error
 

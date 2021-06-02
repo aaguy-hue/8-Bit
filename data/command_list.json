@@ -36,7 +36,7 @@
         ]
     },
     {
-        "group": "Other",
+        "group": "Bot Help",
         "commands": [
             {
                 "name": "help",
@@ -59,22 +59,36 @@
                 "arguments": "Takes in no parameters."
             },
             {
-                "name": "invite",
-                "command": "invite",
-                "aliases": [
-                    "support"
-                ],
-                "description": "Sends the link to invite the bot",
-                "syntax": "invite",
-                "arguments": "Takes in no parameters."
-            },
-            {
                 "name": "support",
                 "command": "support",
                 "aliases": [
                     null
                 ],
                 "description": "Sends the link to get support.",
+                "syntax": "invite",
+                "arguments": "Takes in no parameters."
+            },
+            {
+                "name": "ping",
+                "command": "ping",
+                "aliases": [
+                    "latency"
+                ],
+                "description": "Gets how fast the bot's connection to discord is.",
+                "arguments": "Takes in no parameters."
+            }
+        ]
+    },
+    {
+        "group": "Other",
+        "commands": [
+            {
+                "name": "invite",
+                "command": "invite",
+                "aliases": [
+                    "support"
+                ],
+                "description": "Sends the link to invite the bot",
                 "syntax": "invite",
                 "arguments": "Takes in no parameters."
             },
