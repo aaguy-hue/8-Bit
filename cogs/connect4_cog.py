@@ -25,6 +25,18 @@ class Connect4(commands.Cog):
             return str(reaction.emoji) in emojis and user.display_name==player
         return predicate
     
+    @staticmethod
+    def check(player, channel):
+        def predicate(message):
+            if message.content.strip() == "":
+                return False
+            try:
+                return message.content[0].lower() in ('y', 'n') and message.channel == channel and message.author.id == player.id
+            except Exception as e:
+                print("wtmoo, u have an error", e)
+                return False
+        return predicate
+
     # Commands
     @commands.group(name="c4", aliases=["connect4", "connectFour"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
@@ -57,6 +69,18 @@ class Connect4(commands.Cog):
                 icon_url=self.bot.icon_url
             )
             await ctx.send(embed=errorEmbed)
+            return
+
+        await ctx.send(f"YOU, {opponent.mention} have been challenged to tic tac toe by {ctx.author.mention}. Will you have the courage to face them? (y/n)")
+        
+        try:
+            accepted = await self.bot.wait_for('message', timeout=120, check=self.check(opponent, ctx.channel))
+        except asyncio.TimeoutError:
+            await ctx.send("Wow, what a noob, they didn't even reply")
+            return
+
+        if accepted.content[0].lower() == "n":
+            await ctx.send("Sure man")
             return
 
         rows = 6
@@ -143,7 +167,7 @@ class Connect4(commands.Cog):
             elif result == False:
                 boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessage()
                 embed.remove_field(0)
-                embed.add_field(name=f"{opponentPlayer.name}'s turn!", value=boardMessage, inline=False)
+                embed.add_field(name=f"Tie!", value=boardMessage, inline=False)
                 await gameMessage.edit(embed=embed)
 
                 self.games.endGame(game)

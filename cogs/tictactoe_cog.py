@@ -89,7 +89,7 @@ class TicTacToe(commands.Cog):
             if accepted.content[0].lower() == "n":
                 await ctx.send("Sure man")
                 return
-
+        
         playersdict = {ctx.author.display_name: ctx.author, opponent.display_name: opponent}
         playerkeys = random.sample([ctx.author.display_name, opponent.display_name], 2)
         players = {k: playersdict[k] for k in playerkeys}
@@ -161,19 +161,34 @@ class TicTacToe(commands.Cog):
                 results = game.game_results()
                 
                 image = imageapi.PILupload(game.generate_image(results))
-                embed.add_field(
-                    name=f"{playerkeys[game.move_count%2]}'s turn!",
-                    value="** **",
-                    inline=False
-                ).set_image(url=image['data']['link']).remove_field(0)
-                await gameMessage.edit(embed=embed)
 
                 if results:
+                    embed.add_field(
+                        name=f"{playerkeys[not game.move_count%2]} wins!",
+                        value="** **",
+                        inline=False
+                    ).set_image(url=image['data']['link']).remove_field(0)
+                    await gameMessage.edit(embed=embed)
+
                     self.games.endGame(game)
                     await ctx.send(f"🎉 {players[currentPlayer].mention} wins!")
                 elif results == False:
+                    embed.add_field(
+                        name=f"🐈Tie!",
+                        value="** **",
+                        inline=False
+                    ).set_image(url=image['data']['link']).remove_field(0)
+                    await gameMessage.edit(embed=embed)
+
                     self.games.endGame(game)
                     await ctx.send(f"🤔 You guys tied, but I can't tell if you guys both suck or you're both decent.")
+                else:
+                    embed.add_field(
+                        name=f"{playerkeys[game.move_count%2]}'s turn!",
+                        value="** **",
+                        inline=False
+                    ).set_image(url=image['data']['link']).remove_field(0)
+                    await gameMessage.edit(embed=embed)
     
     @ttt.command(name="ai", aliases=["bot", "singleplayer", "oneplayer", "single", "one"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
