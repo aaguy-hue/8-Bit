@@ -31,11 +31,12 @@ class RockPaperScissors(commands.Cog):
             except asyncio.TimeoutError:
                 await ctx.send("Are you even there? I'm just ending this ***sigh***.")
                 return
+            user_choice = user_choice.lower()
         else:
+            user_choice = user_choice.lower()
             if not (user_choice in rpsGame):
                 await ctx.send("That's not a valid choice!")
                 return
-        user_choice = user_choice.lower()
 
         comp_choice = random.choice(rpsGame)
         if user_choice == 'rock':
