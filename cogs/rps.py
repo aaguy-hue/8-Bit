@@ -35,6 +35,7 @@ class RockPaperScissors(commands.Cog):
             if not (user_choice in rpsGame):
                 await ctx.send("That's not a valid choice!")
                 return
+        user_choice = user_choice.lower()
 
         comp_choice = random.choice(rpsGame)
         if user_choice == 'rock':
