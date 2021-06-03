@@ -97,6 +97,7 @@ class Connect4(commands.Cog):
         except GameAlreadyExistsError:
             await ctx.send("Sorry, you or your opponent already have an ongoing game! Finish that game first, then you can start another.")
             return
+        
         boardMessage = f"1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n{game.generateMessage()}"
         embed = discord.Embed(title="Connect Four", description=f"🔴 {ctx.author.display_name} | 🟡 {opponent.display_name}")
         embed.add_field(name=f"{ctx.author.display_name}'s turn!", value=boardMessage, inline=False)
@@ -155,7 +156,9 @@ class Connect4(commands.Cog):
             result = game.winning_tiles()
             if result:
                 # Update the board to show that the player won
-                boardMessage = f"1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n{game.generateMessage(winning_tiles=result)}"
+                numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
+                numbers[col-1] = '⬇'
+                boardMessage = f"{' '.join(numbers)}\n{game.generateMessage(winning_tiles=result)}"
                 embed.remove_field(0)
                 embed.add_field(name=f"{currentPlayer.name} wins!", value=boardMessage, inline=False)
                 await gameMessage.edit(embed=embed)
@@ -164,7 +167,9 @@ class Connect4(commands.Cog):
                 self.games.endGame(game)
                 return
             elif result == False:
-                boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessage()
+                numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
+                numbers[col-1] = '⬇'
+                boardMessage = f"{' '.join(numbers)}\n{game.generateMessage()}"
                 embed.remove_field(0)
                 embed.add_field(name=f"Tie!", value=boardMessage, inline=False)
                 await gameMessage.edit(embed=embed)
@@ -173,7 +178,9 @@ class Connect4(commands.Cog):
                 await ctx.send("BRUUUUHHHH. Neither of you won, you somehow managed to fill up the board.")
                 return
             elif result is None:
-                boardMessage = "1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣\n" + game.generateMessage()
+                numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
+                numbers[col-1] = '⬇'
+                boardMessage = f"{' '.join(numbers)}\n{game.generateMessage()}"
                 embed.remove_field(0)
                 embed.add_field(name=f"{opponentPlayer.name}'s turn!", value=boardMessage, inline=False)
                 await gameMessage.edit(embed=embed)
