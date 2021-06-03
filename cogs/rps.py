@@ -10,25 +10,31 @@ class RockPaperScissors(commands.Cog):
         self.bot = bot
 
     @commands.command(help="Play with .rps [your choice]", aliases=['rps'])
-    async def rockpaperscissors(self, ctx):
+    async def rockpaperscissors(self, ctx, user_choice=None):
         rpsGame = ['rock', 'paper', 'scissors']
-        embed = discord.Embed(
-            title="Rock, Paper, Scissors", 
-            description="Choose now or else I'll steal all your legos and delete your Minecraft account..."
-        ).set_footer(
-            text="Made by Ikea Shark",
-            icon_url=self.bot.icon_url
-        )
-        await ctx.send(embed=embed)
 
-        def check(msg):
-            return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower() in rpsGame
+        if not user_choice:
+            embed = discord.Embed(
+                title="Rock, Paper, Scissors", 
+                description="Choose now or else I'll steal all your legos and delete your Minecraft account..."
+            ).set_footer(
+                text="Made by Ikea Shark",
+                icon_url=self.bot.icon_url
+            )
+            await ctx.send(embed=embed)
 
-        try:
-            user_choice = (await self.bot.wait_for('message', check=check, timeout=240.0)).content
-        except asyncio.TimeoutError:
-            await ctx.send("Are you even there? I'm just ending this ***sigh***.")
-            return
+            def check(msg):
+                return msg.author == ctx.author and msg.channel == ctx.channel and msg.content.lower() in rpsGame
+
+            try:
+                user_choice = (await self.bot.wait_for('message', check=check, timeout=240.0)).content
+            except asyncio.TimeoutError:
+                await ctx.send("Are you even there? I'm just ending this ***sigh***.")
+                return
+        else:
+            if not (user_choice in rpsGame):
+                await ctx.send("That's not a valid choice!")
+                return
 
         comp_choice = random.choice(rpsGame)
         if user_choice == 'rock':

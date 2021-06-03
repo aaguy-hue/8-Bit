@@ -30,8 +30,8 @@
                     "rps"
                 ],
                 "description": "Plays a game of rock paper scissors versus an AI.",
-                "syntax": "rockpaperscissors",
-                "arguments": "Takes in no parameters."
+                "syntax": "rockpaperscissors <choice>",
+                "arguments": "Takes in a parameter for your choice."
             }
         ]
     },
