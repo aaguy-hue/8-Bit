@@ -67,6 +67,9 @@ class TicTacToe(commands.Cog):
 
         ai = False
         if opponent is None or opponent.id == self.bot.user.id:
+            await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy ai.")
+            return
+            
             ai = True
             opponent = self.bot.user
             await ctx.send("Wow, you actually dare challenge me? So be it.")
