@@ -175,7 +175,7 @@ class Game:
         curr_dir = os.path.dirname(curr_file)
         with open(os.path.join(curr_dir, "cached_boards.json"), "r") as f:
             read_json = json.load(f)
-            retrieved_from_cache = read_json.get(self.board, None)
+            retrieved_from_cache = read_json.get(tuple(self.board), None)
             if retrieved_from_cache:
                 return retrieved_from_cache
         
@@ -196,7 +196,7 @@ class Game:
             output.seek(0)
             val = output.getvalue()
             with open(os.path.join(curr_dir, "cached_boards.json"), "w") as f:
-                read_json.update({self.board: val})
+                read_json.update({tuple(self.board): val})
             return val
     
     def move_valid(self, index) -> bool:
