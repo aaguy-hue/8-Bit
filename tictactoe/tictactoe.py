@@ -2,6 +2,7 @@
 import os
 import sys
 import io
+import json
 from PIL import Image, ImageFont, ImageDraw
 
 sys.setrecursionlimit(4000)
@@ -172,6 +173,12 @@ class Game:
         # Thank god for this: https://stackoverflow.com/a/45041002
         curr_file = os.path.abspath(__file__)
         curr_dir = os.path.dirname(curr_file)
+        with open(os.path.join(curr_dir, "cached_boards.json"), "r") as f:
+            read_json = json.load(f)
+            retrieved_from_cache = read_json.get(self.board, None)
+            if retrieved_from_cache:
+                return retrieved_from_cache
+        
         img = Image.open(os.path.join(curr_dir, "images/grid.png"))
         x = Image.open(os.path.join(curr_dir, "images/X.png"))
         o = Image.open(os.path.join(curr_dir, "images/O.png"))
@@ -187,7 +194,10 @@ class Game:
         with io.BytesIO() as output:
             img.save(output, format="PNG")
             output.seek(0)
-            return output.getvalue()
+            val = output.getvalue()
+            with open(os.path.join(curr_dir, "cached_boards.json"), "w") as f:
+                read_json.update({self.board: val})
+            return val
     
     def move_valid(self, index) -> bool:
         """Returns a bool stating whether a move is valid or not"""
