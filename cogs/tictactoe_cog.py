@@ -122,17 +122,20 @@ class TicTacToe(commands.Cog):
         gameMessage = await ctx.send(embed=embed)
         gameMessage = discord.utils.get(self.bot.cached_messages, id=gameMessage.id)
 
-        #region reactions
-        await gameMessage.add_reaction("1️⃣")
-        await gameMessage.add_reaction("2️⃣")
-        await gameMessage.add_reaction("3️⃣")
-        await gameMessage.add_reaction("4️⃣")
-        await gameMessage.add_reaction("5️⃣")
-        await gameMessage.add_reaction("6️⃣")
-        await gameMessage.add_reaction("7️⃣")
-        await gameMessage.add_reaction("8️⃣")
-        await gameMessage.add_reaction("9️⃣")
-        #endregion
+        try:
+            #region reactions
+            await gameMessage.add_reaction("1️⃣")
+            await gameMessage.add_reaction("2️⃣")
+            await gameMessage.add_reaction("3️⃣")
+            await gameMessage.add_reaction("4️⃣")
+            await gameMessage.add_reaction("5️⃣")
+            await gameMessage.add_reaction("6️⃣")
+            await gameMessage.add_reaction("7️⃣")
+            await gameMessage.add_reaction("8️⃣")
+            await gameMessage.add_reaction("9️⃣")
+            #endregion
+        except AttributeError as e:
+            await ctx.send(f"Sorry, it seems like I'm not able to add the reaction to the message, please report this to the dev in the support server at {self.bot.support_server}\n```{e}```")
 
         while self.games.gameExists(game):
             currentPlayer = playerkeys[game.move_count%2]

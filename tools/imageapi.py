@@ -1,8 +1,10 @@
 import os
 import json
+import base64
 import hashlib
 import requests
 from . import constants
+
 
 def PILupload(imgBytes) -> dict:
     """Uploads an image to imgur.
@@ -31,6 +33,11 @@ def PILupload(imgBytes) -> dict:
             response = cachedImg
     
     return response
+
+def boardToImgur(board):
+    """Returns an imgur link for a tic tac toe board.
+    Sorta a combination of PILupload and the tictactoe board.generate_image(), but more optimized."""
+    pass
 
 def retrieve_credits():
     """Returns how many credits the app has for Imgur.
