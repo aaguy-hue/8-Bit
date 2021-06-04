@@ -67,7 +67,7 @@ class TicTacToe(commands.Cog):
 
         ai = False
         if opponent is None or opponent.id == self.bot.user.id:
-            await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy ai.")
+            await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy AI.")
             return
             
             ai = True
@@ -196,7 +196,7 @@ class TicTacToe(commands.Cog):
     @ttt.command(name="ai", aliases=["bot", "singleplayer", "oneplayer", "single", "one"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
     async def ai(self, ctx):
-        await ctx.invoke(self.bot.get_command('c4'), opponent=self.bot.user)
+        await ctx.invoke(self.bot.get_command('ttt'), opponent=self.bot.user)
     
     @ttt.command(name="endGame", aliases=["end", "quit", "resign", "stop"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True)
