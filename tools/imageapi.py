@@ -21,7 +21,11 @@ def PILupload(imgBytes) -> dict:
         
         cachedImg = file_data.get(img_hashed, None)
         if not cachedImg:
-            payload = {"image": imgBytes}
+            payload = {
+                # "image": base64.b64encode(imgBytes.decode()).decode(),
+                # "type": "URL"
+                "image": imgBytes
+            }
             headers = {"Authorization": f"Client-ID {constants.IMGUR_API_CLIENT_ID}"}
             response = requests.request("POST", constants.IMGUR_API_URL, headers=headers, data=payload).json()
             
