@@ -184,6 +184,7 @@ class Game:
         return [x+1 for x in range(9) if self.board[x] == 0]
 
     def best_move(self, player: int, other_player) -> int:
+        # https://www.freecodecamp.org/news/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37/
         return self.minimax(player, other_player)
 
     def minimax(self, player, other_player):

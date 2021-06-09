@@ -124,7 +124,7 @@ class TicTacToe(commands.Cog):
             text="Made by DJ Snowball",
             icon_url=self.bot.icon_url
         )
-        gameMessage = await ctx.send(embed=embed)
+        gameMessage = await ctx.send("Tic tac toe AI has been released! Run `g ttt ai` to try it out!", embed=embed)
         gameMessage = discord.utils.get(self.bot.cached_messages, id=gameMessage.id)
 
         try:
