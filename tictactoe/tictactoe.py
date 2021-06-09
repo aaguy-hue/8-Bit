@@ -3,6 +3,7 @@ import os
 import sys
 import io
 import json
+from typing import List
 from PIL import Image, ImageFont, ImageDraw
 
 sys.setrecursionlimit(4000)
@@ -38,7 +39,7 @@ class Game:
     def __ne__(self, other):
         return not (isinstance(other, self.__class__) and self.players[0] == other.players[0] and self.players[1] == other.players[1])
     
-    def make_move_rc(self, row, col) -> bool:
+    def make_move_rc(self, row, col, player=None) -> bool:
         """Makes a move in the tic tac toe game by specifying a row and column.
         
         Takes in the row and column of the place to put the token.
@@ -54,12 +55,12 @@ class Game:
         if self.board[theIndex]:
             return False
         
-        self.board[theIndex] = self.move_count % 2 + 1
+        self.board[theIndex] = player if player else self.move_count % 2 + 1
         self.move_count += 1
 
         return True
     
-    def make_move_index(self, index) -> bool:
+    def make_move_index(self, index, player=None) -> bool:
         """Makes a move in the tic tac toe game by specifying an index.
         
         Takes in a parameter, index, which represents the index of a spot.
@@ -74,7 +75,7 @@ class Game:
         if self.board[index-1]:
             return False
         
-        self.board[index-1] = self.move_count % 2 + 1
+        self.board[index-1] = player if player else self.move_count % 2 + 1
         self.move_count += 1
         return True
     
@@ -131,39 +132,20 @@ class Game:
         
         return None
     
-    def results_value(self) -> int:
-        """Returns 0 for tie, 1 for win, -1 for lose, and None for no ending yet."""
-        # Current player
-        player = not self.move_count % 2
-        playerlst = [player+1]*3
-        if playerlst == [self.board[0], self.board[1], self.board[2]] or \
-           playerlst == [self.board[3], self.board[4], self.board[5]] or \
-           playerlst == [self.board[6], self.board[7], self.board[8]] or \
-           playerlst == [self.board[0], self.board[3], self.board[6]] or \
-           playerlst == [self.board[1], self.board[4], self.board[7]] or \
-           playerlst == [self.board[2], self.board[5], self.board[8]] or \
-           playerlst == [self.board[0], self.board[4], self.board[8]] or \
-           playerlst == [self.board[2], self.board[4], self.board[6]]:
-            return 1
-        
-        # Opponent player
-        opponent = self.move_count % 2
-        opponentlst = [opponent+1]*3
-        if opponentlst == [self.board[0], self.board[1], self.board[2]] or \
-           opponentlst == [self.board[3], self.board[4], self.board[5]] or \
-           opponentlst == [self.board[6], self.board[7], self.board[8]] or \
-           opponentlst == [self.board[0], self.board[3], self.board[6]] or \
-           opponentlst == [self.board[1], self.board[4], self.board[7]] or \
-           opponentlst == [self.board[2], self.board[5], self.board[8]] or \
-           opponentlst == [self.board[0], self.board[4], self.board[8]] or \
-           opponentlst == [self.board[2], self.board[4], self.board[6]]:
-            return -1
-
-        # If no one wins, and the board is full
-        if all(self.board):
-            return 0
-        
-        return None
+    def winning(self, player):
+        if (
+        (self.board[0] == player and self.board[1] == player and self.board[2] == player) or
+        (self.board[3] == player and self.board[4] == player and self.board[5] == player) or
+        (self.board[6] == player and self.board[7] == player and self.board[8] == player) or
+        (self.board[0] == player and self.board[3] == player and self.board[6] == player) or
+        (self.board[1] == player and self.board[4] == player and self.board[7] == player) or
+        (self.board[2] == player and self.board[5] == player and self.board[8] == player) or
+        (self.board[0] == player and self.board[4] == player and self.board[8] == player) or
+        (self.board[2] == player and self.board[4] == player and self.board[6] == player)
+        ):
+            return True
+        else:
+            return False
 
     
     def generate_image(self, winning_tiles=None) -> bytes:
@@ -196,43 +178,44 @@ class Game:
         """Returns a bool stating whether a move is valid or not"""
         return not self.board[index-1]
     
-    def best_move(self) -> int:
-        best_score = float("-inf")
-        move = None
-        for i in range(1,10):
-            if self.board[i-1]: continue
-            self.make_move_index(i)
-            score = self.minimax(0, False)
-            print("board", self.board, "score", score)
-            self.undo_move_index(i)
-            if score > best_score:
-                best_score = score
-                move = i
+    @property
+    def emptyIndexies(self) -> List[int]:
+        """Returns a list of indexes for the available spots"""
+        return [x+1 for x in range(9) if self.board[x] == 0]
+
+    def best_move(self, player: int, other_player) -> int:
+        return self.minimax(player, other_player)
+
+    def minimax(self, player, other_player):
+        # available spots
+        availSpots = self.emptyIndexies
+
+        # checks for the terminal states such as win, lose, and tie 
+        # and returning a value accordingly
+        if self.winning(other_player):
+            return -10
+        elif self.winning(player):
+            return 10
+        elif len(availSpots) == 0:
+            return 0
         
-        return move
-    
-    def minimax(self, depth: int, maximizing: bool):
-        """Used this video as a reference: https://www.youtube.com/watch?v=trKjYdBASyQ"""
-        result = self.results_value()
-        # print("board", self.board, "result", result)
-        if result != None:
-            return result
+        the_moves = []
+        for j in availSpots:
+            self.make_move_index(j)
+            # collect the score resulted from calling minimax 
+            # on the opponent of the current player
+
+            the_moves.append({
+                "index": j,
+                "score": self.minimax(player, other_player)
+            })
+
+            self.undo_move_index(j)
         
-        if maximizing:
-            best_score = float("-inf")
-            for i in range(1,10):
-                if self.board[i-1]: continue
-                self.make_move_index(i)
-                score = self.minimax(depth+1, False)
-                self.undo_move_index(i)
-                best_score = max(score, best_score)
+        scoreLambda = lambda x: x["score"]
+        if (not self.move_count%2 == player):
+            the_best_move = max(the_moves, key=scoreLambda)["index"]
         else:
-            best_score = float("inf")
-            for i in range(1,10):
-                if self.board[i-1]: continue
-                self.make_move_index(i)
-                score = self.minimax(depth+1, True)
-                self.undo_move_index(i)
-                best_score = min(score, best_score)
-            
-        return best_score
+            the_best_move = min(the_moves, key=scoreLambda)["index"]
+        
+        return the_best_move

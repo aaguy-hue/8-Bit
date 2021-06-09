@@ -67,8 +67,8 @@ class TicTacToe(commands.Cog):
 
         ai = False
         if opponent is None or opponent.id == self.bot.user.id:
-            await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy AI.")
-            return
+            # await ctx.send("I don't even know how to play tic tac toe, let alone be a worthy AI.")
+            # return
             
             ai = True
             opponent = self.bot.user
@@ -97,12 +97,17 @@ class TicTacToe(commands.Cog):
         playerkeys = random.sample([ctx.author.display_name, opponent.display_name], 2)
         players = {k: playersdict[k] for k in playerkeys}
 
+        if ai:
+            aiplayer = playerkeys.index(self.bot.user.display_name)+1
+            humanplayer = playerkeys.index(ctx.author.display_name)+1
+        
         game = tictactoe.Game(p1=playerkeys[0], p2=playerkeys[1], data=players)
         try:
             self.games.add(game)
         except GameAlreadyExistsError:
-            await ctx.send("Hey, it seems like either you or your opponent are already in a game. Finish that first, then you can do this.")
-            return
+            if not ai:
+                await ctx.send("Hey, it seems like either you or your opponent are already in a game. Finish that first, then you can do this.")
+                return
         
         
         image = imageapi.PILupload(game.generate_image())
@@ -142,8 +147,7 @@ class TicTacToe(commands.Cog):
             ai_turn = players[currentPlayer].id == self.bot.user.id and ai
 
             if ai_turn:
-                index = game.best_move()
-                print(index)
+                index = game.best_move(aiplayer, humanplayer)
             else:
                 try:
                     reaction, user = await self.bot.wait_for('reaction_add', check=self.check_reaction(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"], currentPlayer), timeout=240.0)
