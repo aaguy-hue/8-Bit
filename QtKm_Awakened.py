@@ -58,6 +58,11 @@ class Bot(commands.Bot):
         self.icon_url = "https://i.imgur.com/M3u0wYZ.png"
         self.support_server = "https://dsc.gg/8bit-support"
         self.invite_link = "https://dsc.gg/8bit"
+        self.contributors = {
+            # "HYPERION": "<@709154056337358929>",
+            # "DJ DOUGHBALL": "<@692038268451291176>",
+            "HYPERION": "Hyperion",
+        }
         self.voting_url = "https://top.gg/bot/705890912282345472/vote"
         self.loop.create_task(self.track_start())
         self.loop.create_task(self.load_all_extensions())

@@ -1,4 +1,4 @@
-"""RPS, aka rock paper scissors. Made by Ikea Shark!!!"""
+"""RPS, aka rock paper scissors. Made by Shuban!!!"""
 
 import random
 import discord
@@ -18,7 +18,7 @@ class RockPaperScissors(commands.Cog):
                 title="Rock, Paper, Scissors", 
                 description="Choose now or else I'll steal all your legos and delete your Minecraft account..."
             ).set_footer(
-                text="Made by Ikea Shark",
+                text=f"Made by {self.bot.contributors['HYPERION']}",
                 icon_url=self.bot.icon_url
             )
             await ctx.send(embed=embed)
