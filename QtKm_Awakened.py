@@ -1,10 +1,11 @@
 """Using SourSpoon discord.py template"""
+import sys
 import asyncio
 import datetime
 import json
 import logging
+from discord_components import DiscordComponents
 from pathlib import Path
-import sys
 
 import discord
 from discord.ext import commands
@@ -107,6 +108,7 @@ class Bot(commands.Bot):
         """
         await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='g help | Tic Tac Toe AI released!'))
 
+        DiscordComponents(self)
         print('-' * 10)
         self.app_info = await self.application_info()
         print(f'Logged in as: {self.user.name}\n'
