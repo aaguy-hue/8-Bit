@@ -50,12 +50,15 @@ class Main(commands.Cog):
                 title=info['command'],
                 description=f"**SYNTAX**: {syntax}\n**ALIASES**: {aliases}\n\n{arguments}\n{description}",
                 color=ctx.author.color
-            ).add_field(
+            )
+            embed.add_field(
                 name="Links",
                 value=f"[Invite Me]({self.bot.invite_link}) - [Support Server]({self.bot.support_server}) - [Vote for Me]({self.bot.voting_url})",
                 inline=False
+            ).set_footer(
+                text="Made by DJ Snowball",
+                icon_url=f"{self.bot.icon_url}"
             )
-        embed.set_footer(text="Made by DJ Snowball", icon_url=f"{self.bot.icon_url}")
         await ctx.send(embed=embed)
     
     @commands.command(aliases=["inv", "support", "server"])
