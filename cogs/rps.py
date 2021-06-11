@@ -67,10 +67,9 @@ class RockPaperScissors(commands.Cog):
             )
 
             def check(i):
-                return i.component.label.lower() in rpsGame and i.user == ctx.author and i.message.id == message
+                return i.component.label.lower() in rpsGame and i.user == ctx.author and i.message.id == message.id
 
             try:
-                # user_choice = (await self.bot.wait_for('message', check=check, timeout=240.0)).content
                 interaction = await self.bot.wait_for("button_click", check=check)
                 for component in range(3):
                     components[component].disabled = True
