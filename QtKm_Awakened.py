@@ -59,6 +59,8 @@ class Bot(commands.Bot):
         self.icon_url = "https://i.imgur.com/M3u0wYZ.png"
         self.support_server = "https://dsc.gg/8bit-support"
         self.invite_link = "https://dsc.gg/8bit"
+        self.support_server_RAW = "https://discord.com/invite/VPPrpmQ44q"
+        self.invite_link_RAW = "https://discord.com/oauth2/authorize?client_id=705890912282345472&permissions=388160&scope=bot"
         self.contributors = {
             # "HYPERION": "<@709154056337358929>",
             # "DJ DOUGHBALL": "<@692038268451291176>",

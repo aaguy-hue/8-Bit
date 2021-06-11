@@ -8,6 +8,7 @@ sys.path.insert(0,parentdir)
 import random
 import asyncio
 import discord
+import discord_components
 from tools import imageapi
 from .GameManager import *
 from tictactoe import tictactoe
@@ -25,19 +26,7 @@ class TicTacToe(commands.Cog):
         def predicate(reaction, user):
             return str(reaction.emoji) in emojis and user.display_name==player
         return predicate
-    
-    @staticmethod
-    def check(player, channel):
-        def predicate(message):
-            if message.content.strip() == "":
-                return False
-            try:
-                return message.content[0].lower() in ('y', 'n') and message.channel == channel and message.author.id == player.id
-            except Exception as e:
-                print("wtmoo, u have an error", e)
-                return False
-        return predicate
-    
+        
     # Commands
     @commands.group(name="tictactoe", aliases=["TicTacToe", "ttt"], pass_context=True, invoke_without_command=True)
     @commands.bot_has_permissions(send_messages=True, manage_messages=True)
@@ -81,17 +70,40 @@ class TicTacToe(commands.Cog):
             return
 
         if not ai:
-            await ctx.send(f"YOU, {opponent.mention} have been challenged to tic tac toe by {ctx.author.mention}. Will you have the courage to face them? (y/n)")
+            components = [
+                discord_components.Button(
+                    label="Yes",
+                    style=3
+                ),
+                discord_components.Button(
+                    label="No",
+                    style=4
+                )
+            ]
+
+            message = await ctx.send(
+                f"YOU, {opponent.mention} have been challenged to tic tac toe by {ctx.author.mention}. Will you have the courage to face them?",
+                components=[components]
+            )
+
+            def check(i):
+                return i.component.label.lower() in ['yes', 'no'] and i.user.id == opponent.id and i.message.id == message.id
 
             try:
-                accepted = await self.bot.wait_for('message', timeout=120, check=self.check(opponent, ctx.channel))
+                interaction = await self.bot.wait_for("button_click", check=check, timeout=120.0)
+                components[0].disabled = True
+                components[1].disabled = True
+                
+                await message.edit(components=[components])
+
+                if interaction.component.label.lower() == "no":
+                    await interaction.respond(content="Sure", ephemeral=False)
+                    return
+                await interaction.respond(content="Let the game begin!", ephemeral=False)
             except asyncio.TimeoutError:
                 await ctx.send("Wow, what a noob, they didn't even reply")
                 return
             
-            if accepted.content[0].lower() == "n":
-                await ctx.send("Sure man")
-                return
         
         playersdict = {ctx.author.display_name: ctx.author, opponent.display_name: opponent}
         playerkeys = random.sample([ctx.author.display_name, opponent.display_name], 2)

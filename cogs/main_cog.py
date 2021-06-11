@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import itertools
+import discord_components
 from discord.ext import commands
 
 class Main(commands.Cog):
@@ -57,7 +58,7 @@ class Main(commands.Cog):
         embed.set_footer(text="Made by DJ Snowball", icon_url=f"{self.bot.icon_url}")
         await ctx.send(embed=embed)
     
-    @commands.command(aliases=["inv", "support"])
+    @commands.command(aliases=["inv", "support", "server"])
     @commands.bot_has_permissions(send_messages=True)
     async def invite(self, ctx):
         embed = discord.Embed(
@@ -73,7 +74,20 @@ class Main(commands.Cog):
             text="Made by DJ Snowball",
             icon_url=self.bot.icon_url
         )
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, components=[[
+            discord_components.Button(
+                label="Invite 8-Bit!",
+                url=self.bot.invite_link_RAW,
+                style=5,
+                emoji="🔗"
+            ),
+            discord_components.Button(
+                label="Support Server",
+                url=self.bot.support_server_RAW,
+                style=5,
+                emoji="💁‍♂️"
+            )
+        ]])
     
     @commands.command(aliases=["latency"], help="Checks how fast the bot's connection to discord is.")
     @commands.bot_has_permissions(send_messages=True)
@@ -118,14 +132,14 @@ class Main(commands.Cog):
 
     @commands.command()
     async def vote(self, ctx):
-        embed = discord.Embed(
-            title="Vote", 
-            description=self.bot.voting_url
-        ).set_footer(
-            text="Made by DJ Snowball",
-            icon_url=self.bot.icon_url
-        )
-        await ctx.send(embed=embed)
+        await ctx.send("Press the button to vote!", components=[
+            discord_components.Button(
+                label="Vote for Me!",
+                url=self.bot.voting_url,
+                style=5,
+                emoji="👉"
+            )
+        ])
     
     @commands.command()
     async def prefix(self, ctx, prefix=None):
