@@ -33,6 +33,7 @@ class Connect4(commands.Cog):
         if opponent is None or opponent.id == self.bot.user.id:
             await ctx.send("AI is not released for c4 yet 😢")
             return
+
             await ctx.send("You wanna fight me kiddo? You know I was a champion back in my day 😤. Get ready to LOSE!")
             await asyncio.sleep(1)
             await ctx.send("[LOG] Another person has been hired to manage this game, due to the previous person becoming hyper.")

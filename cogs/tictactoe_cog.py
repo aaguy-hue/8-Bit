@@ -159,7 +159,7 @@ class TicTacToe(commands.Cog):
             ai_turn = players[currentPlayer].id == self.bot.user.id and ai
 
             if ai_turn:
-                index = game.best_move(aiplayer, humanplayer)
+                index = await game.best_move(aiplayer, humanplayer)
             else:
                 try:
                     reaction, user = await self.bot.wait_for('reaction_add', check=self.check_reaction(["1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣"], currentPlayer), timeout=240.0)

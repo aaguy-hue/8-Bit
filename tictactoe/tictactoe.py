@@ -182,12 +182,12 @@ class Game:
     def emptyIndexies(self) -> List[int]:
         """Returns a list of indexes for the available spots"""
         return [x+1 for x in range(9) if self.board[x] == 0]
-
-    def best_move(self, player: int, other_player) -> int:
+    
+    async def best_move(self, player: int, other_player) -> int:
         # https://www.freecodecamp.org/news/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37/
-        return self.minimax(player, other_player)
-
-    def minimax(self, player, other_player):
+        return (await self.minimax(player, other_player))-1
+    
+    async def minimax(self, player, other_player):
         # available spots
         availSpots = self.emptyIndexies
 
@@ -208,7 +208,7 @@ class Game:
 
             the_moves.append({
                 "index": j,
-                "score": self.minimax(player, other_player)
+                "score": await self.minimax(player, other_player)
             })
 
             self.undo_move_index(j)
