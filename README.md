@@ -15,10 +15,17 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Running the Bot
 
-You can get the dependencies automatically by going to the path in your terminal, then running `python -m pip install -r requirements.txt`. If you add a new package, please add it to [the requirements.txt file](https://github.com/aaguy-hue/Gamily-Ever-After/blob/master/requirements.txt).
+### Getting Dependencies
+
+You can get the dependencies automatically by going to the path of the project in your terminal, then running `python -m pip install -r requirements.txt`. If you add a new package, please add it and its dependencies to [the requirements.txt file](requirements.txt).
 
 The bot depends on the following things:
- - Python (programming language)
- - discord.py (interface to Discord API)
+ - Python Interpreter (programming language)
+ - [discord.py](https://github.com/Rapptz/discord.py) (interface to Discord API)
+ - [discord-components](https://gitlab.com/discord.py-components/discord.py-components) (library which allows for use of buttons and dropdowns, which will be in discord.py in a few months)
+ - [Pillow](https://github.com/python-pillow/Pillow) (used to generate images)
+ - [Requests](https://github.com/psf/requests) (used to upload images to the imgur api for tic tac toe)
 
-Note: The python-dotenv package is no longer used after the rewrite and will be removed from the requirements.txt along with its dependencies in future.
+### Setting Environment Variables
+
+After you've 
