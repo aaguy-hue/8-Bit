@@ -25,7 +25,7 @@ Quite frankly, please just treat everyone with respect and kindness. Do not get 
 You can get the dependencies automatically by going to the path of the project in your terminal, then running `python -m pip install -r requirements.txt`.
 
 The bot depends on the following things:
- - Python Interpreter (programming language)
+ - [Python 3.6 or newer](https://www.python.org/downloads/) (programming language)
  - [discord.py](https://github.com/Rapptz/discord.py) (interface to Discord API)
  - [discord-components](https://gitlab.com/discord.py-components/discord.py-components) (library which allows for use of buttons and dropdowns, which will be in discord.py in a few months)
  - [Pillow](https://github.com/python-pillow/Pillow) (used to generate images)
