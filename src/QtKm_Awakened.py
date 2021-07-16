@@ -29,7 +29,7 @@ async def run():
 
     bot = Bot(description="A fun bot to liven up a server!")
     try:
-        await bot.start(os.getenv("token"))
+        await bot.start(os.getenv("8BIT_TOKEN"))
     except KeyboardInterrupt:
         await bot.logout()
 
