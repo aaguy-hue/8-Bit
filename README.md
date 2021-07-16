@@ -2,7 +2,7 @@
 
 [![discord server](https://discord.com/api/guilds/770895120886661130/embed.png)](https://discord.com/invite/VPPrpmQ44q)
 
-A discord bot to have fun with friends! The bot is hosted on heroku, use this link to invite the bot: https://discord.com/api/oauth2/authorize?client_id=705890912282345472&permissions=515136&scope=bot.
+A discord bot to have fun with friends! The bot is hosted on heroku, use this link to invite the bot: https://dsc.gg/8bit.
 
 ## Functionality
 
