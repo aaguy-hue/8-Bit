@@ -1,4 +1,4 @@
-"""RPS, aka rock paper scissors. Made by Shuban!!!"""
+"""RPS, aka rock paper scissors."""
 
 import random
 import discord

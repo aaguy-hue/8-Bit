@@ -1,32 +1,14 @@
 """Using SourSpoon discord.py template"""
+import os
 import sys
 import asyncio
 import datetime
 import json
-import logging
+import discord
+# import logging
 from discord_components import DiscordComponents
 from pathlib import Path
-
-import discord
 from discord.ext import commands
-
-try:
-    dev_mode = sys.argv[1].lower() == 'dev'
-except IndexError:
-    dev_mode = False
-
-if dev_mode:
-    default_prefix = "gdev "
-    print("ACTIVATED IN DEVELOPER MODE. PREFIX IS 'gdev '.")
-else:
-    default_prefix = "g "
-    print("ACTIVATED IN PRODUCTION MODE. PREFIX IS 'g '.")
-
-def config_load():
-    with open('data/config.json', 'r', encoding='utf-8') as doc:
-        #  Please make sure encoding is correct, especially after editing the config file
-        return json.load(doc)
-
 
 async def run():
     """
@@ -34,14 +16,9 @@ async def run():
     it's recommended that you create it here and pass it to the bot as a kwarg.
     """
 
-    config = config_load()
-    bot = Bot(config=config,
-              description=config['description'])
+    bot = Bot(description="A fun bot to liven up a server!")
     try:
-        if dev_mode:
-            await bot.start(config['token-dev'])
-        else:
-            await bot.start(config['token'])
+        await bot.start(os.getenv("token"))
     except KeyboardInterrupt:
         await bot.logout()
 
@@ -85,7 +62,7 @@ class Bot(commands.Bot):
         A good example of async logic would be retrieving a prefix from a database.
         """
         with open('data/prefixes.json', 'r') as f:
-            prefix = json.load(f).get(str(message.guild.id), default_prefix)
+            prefix = json.load(f).get(str(message.guild.id), "g ")
         return commands.when_mentioned_or(prefix)(bot, message)
     
     async def load_all_extensions(self):
@@ -131,11 +108,11 @@ class Bot(commands.Bot):
     
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandNotFound):
-            pass
+            return
         elif isinstance(error, commands.CommandOnCooldown):
             hours, minutes, seconds = str(datetime.timedelta(seconds=round(error.retry_after))).split(":")
-            timeLeft = f"{hours} hours, {minutes} minutes, and {seconds} seconds"
-            await ctx.send(f"The people of QZ can construct another item in {timeLeft}.")
+            time_left = f"{hours} hours, {minutes} minutes, and {seconds} seconds"
+            await ctx.send(f"There is a cooldown remaining for this command for {time_left}.")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.send(f"You didn't specify the `{error.param.name}` argument.")
         elif isinstance(error, commands.BadArgument):
@@ -164,7 +141,7 @@ class Bot(commands.Bot):
             await ctx.send(f"I need the `{error.missing_role.name}` role in order to run this command")
         elif isinstance(error, commands.errors.BotMissingPermissions):
             if "send_messages" in error.missing_perms:
-                pass
+                return
             missing_perms = ', '.join(error.missing_perms)
             await ctx.send(f"I need the following permissions to run this command: `{missing_perms}`")
         elif isinstance(error, discord.Forbidden):
