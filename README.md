@@ -11,7 +11,7 @@ A discord bot to have fun with friends! The bot is hosted on heroku, use this li
 
 ## Contributing
 
-See [contributing.md](contributing.md)
+See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Running the Bot
 
