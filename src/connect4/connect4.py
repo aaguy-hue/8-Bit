@@ -1,15 +1,29 @@
+"""
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+"""
+
 class Game:
+    """A connect 4 game, original idea came from https://github.com/jayanam/connect4_python/blob/master/classes/board.py.
+    
+    However, this has been modified to do things like use bitboards for further optimizations, and it also does slightly different things.
+
+    Parameters:
+        rows - An integer representing how many rows are in the board. Defaults to 6.
+        columns - An integer representing how many columns are in the board. Defaults to 7.
+        player1 - The name of player 1, defaults to Red
+        player2 - The name of player 2, defaults to Yellow
+        data - extra stuff about the players
+    """
+
     def __init__(self, rows: int=6, columns: int=7, player1: str="Red", player2: str="Yellow", data=None):
-        """A connect 4 game, may or may not be largely copied from https://github.com/jayanam/connect4_python/blob/master/classes/board.py
-        Hey at least I did change it a bit.
-        
-        Parameters:
-            rows - An integer representing how many rows are in the board. Defaults to 6.
-            columns - An integer representing how many columns are in the board. Defaults to 7.
-            player1 - The name of player 1, defaults to Red
-            player2 - The name of player 2, defaults to Yellow
-            data - extra stuff about the players
-        """
         self.rows = rows
         self.columns = columns
         self.players = [Player(0, name=player1), Player(1, name=player2)]
