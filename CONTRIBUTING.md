@@ -11,6 +11,7 @@ The following is mostly just a guideline to help you contribute to the bot, whil
   - [Getting Dependencies](#getting-dependencies)
   - [Setting Environment Variables](#setting-environment-variables)
   - [Finally Running It!](#finally-running-it)
+- [Finding what to Develop](#finding-what-to-develop)
 - [Submitting Changes](#submitting-changes)
 - [Reporting Bugs](#reporting-bugs)
 
