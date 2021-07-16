@@ -47,6 +47,10 @@ On *nix systems like MacOS and Linux, you can do `export VARIABLE=VALUE` to set 
 
 Finally, go to the src folder and run the file called "QtKm_Awakened.py". Running this file will run the project. If you have any questions, just message in our [discord server](https://discord.com/invite/VPPrpmQ44q).
 
+## Finding what to Develop
+
+If you're new and you want to find what to develop, then there are two great places to find this. First of all, head over to [the issues page](https://github.com/aaguy-hue/8-Bit/issues) to find issues with the bot that can be fixed. Also, you can head over to [the projects page](https://github.com/aaguy-hue/8-Bit/projects) to find what's currently on the roadmap.
+
 ## Submitting Changes
 
 If you want to make a change to the bot, follow the following instructions.
