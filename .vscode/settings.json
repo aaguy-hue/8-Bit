@@ -1,0 +1,8 @@
+{
+    "python.pythonPath": "C:\\Users\\amath\\AppData\\Local\\Programs\\Python\\Python38-32\\python.exe",
+    "files.associations": {
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c"
+    }
+}
