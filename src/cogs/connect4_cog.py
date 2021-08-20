@@ -30,8 +30,8 @@ class Connect4(commands.Cog):
         self.bot = bot
         self.games = GameManager()
     
-    def interaction_check(self, playerId):
-        return lambda i: i.user.id == playerId
+    def interaction_check(self, player_id, component_id):
+        return lambda i: i.user.id == player_id and i.custom_id == component_id
     
     # Commands
     @commands.group(name="c4", aliases=["connect4", "connectFour"], pass_context=True, invoke_without_command=True)
@@ -149,7 +149,7 @@ class Connect4(commands.Cog):
                 col = connect4.get_optimal_move(game, isMaximizing=False)
             else:
                 try:
-                    interaction = await self.bot.wait_for("select_option", check=self.interaction_check(gameData[currentPlayer.name].id), timeout=120.0)
+                    interaction = await self.bot.wait_for("select_option", check=self.interaction_check(gameData[currentPlayer.name].id, choose_column[0].id), timeout=120.0)
                     col = int(interaction.values[0])
                 except asyncio.TimeoutError:
                     await ctx.send(f"Oh well I guess {gameData[currentPlayer.name].mention} is just scared.")
