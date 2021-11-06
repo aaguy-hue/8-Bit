@@ -25,21 +25,24 @@ Quite frankly, please just treat everyone with respect and kindness. Do not get 
 
 You can get the dependencies automatically by going to the path of the project in your terminal, then running `python -m pip install -r requirements.txt`.
 
+If you have any suggestions on adding/removing a dependency, then please make an issue. Ideally, the bot should be as lightweight as possible, and if you want to suggest swapping out or removing a dependency for that, then I'm up for it. If you want to add one, please explain why the bot would benefit from the added dependency.
+
 The bot depends on the following things:
  - [Python 3.6 or newer](https://www.python.org/downloads/) (programming language)
  - [discord.py](https://github.com/Rapptz/discord.py) (interface to Discord API)
  - [discord-components](https://gitlab.com/discord.py-components/discord.py-components) (library which allows for use of buttons and dropdowns, which will be in discord.py in a few months)
  - [Pillow](https://github.com/python-pillow/Pillow) (used to generate images)
- - [Requests](https://github.com/psf/requests) (used to upload images to the imgur api for tic tac toe)
+ - [Flask](https://flask.palletsprojects.com/en/2.0.x/) (used as a web server for the images)
 
 ### Setting Environment Variables
 
 After you've got all your dependencies, you just have one more step before you can finally get started. You will need to set the following environment variables:
  
  - 8BIT_TOKEN (the token of your discord bot you will test this on, go to [discord.com/developers](https://discord.com/developers) to do this)
- - IMGUR_CLIENT_ID (go to [https://api.imgur.com/oauth2/addclient](https://api.imgur.com/oauth2/addclient) and make a new client, then set the client id as this)
+ - IMAGE_API_PASSWORD (this is a password that will be used for the image api, it makes sure that people don't start using your api)
+ - FLASK_SECRET (generate this with `python -c 'import os; print(os.urandom(16))'`, it's for the purpose of keeping the website with the image api secure)
 
-On Windows, you can do `SET VARIABLE=VALUE` in your terminal to set environment variables.
+On Windows, you can do `SET VARIABLE=VALUE` in your terminal to set temporary environment variables. Unfortunately, you will have to do more steps to make it persistent. Go into Settings -> System -> About, then click "Advanced system settings" under the "Related settings" section. This will take you to the "Advanced" tab of System Properties. In the window that popped up, press the "Environment Variables" button towards the bottom. You will likely want to set the environment variable as a user variable, but putting it as a system variable works too. Press the "new" button, and the rest is easy to do.
 
 On *nix systems like MacOS and Linux, you can do `export VARIABLE=VALUE` to set environment variables.
 
@@ -62,6 +65,7 @@ Pull Request Criteria:
  - What does it do?
  - Why is this useful?
  - What tests have you performed to make sure that what you modified/added is still functional?
+   - If you add/modify something which uses the image API, then just test if the images still work locally as you cannot test the image API yourself
 
 Your pull request may not be accepted if you do not meet the criteria.
 

@@ -21,7 +21,6 @@ import random
 import asyncio
 import discord
 import discord_components
-from tools import imageapi
 from .GameManager import *
 from tictactoe import tictactoe
 from discord.ext import commands
@@ -134,7 +133,7 @@ class TicTacToe(commands.Cog):
                 return
         
         
-        image = imageapi.PILupload(game.generate_image())
+        image = game.generate_image()
         embed = discord.Embed(
             title="Tic Tac Toe",
             description=f"❌ {playerkeys[0]} | ⭕ {playerkeys[1]}"
@@ -194,7 +193,7 @@ class TicTacToe(commands.Cog):
                 
                 results = game.game_results()
                 
-                image = imageapi.PILupload(game.generate_image(results))
+                image = game.generate_image(results)
 
                 if results:
                     embed.add_field(

@@ -11,10 +11,10 @@ GNU General Public License for more details.
 
 Using SourSpoon discord.py template"""
 import os
-import sys
+import json
 import asyncio
 import datetime
-import json
+import website
 import discord
 # import logging
 from discord_components import DiscordComponents
@@ -23,10 +23,11 @@ from discord.ext import commands
 
 async def run():
     """
-    Where the bot gets started. If you wanted to create an database connection pool or other session for the bot to use,
+    Where the bot and website gets started. If you wanted to create an database connection pool or other session for the bot to use,
     it's recommended that you create it here and pass it to the bot as a kwarg.
     """
 
+    website.run_site()
     bot = Bot(description="A fun bot to liven up a server!")
     try:
         await bot.start(os.getenv("8BIT_TOKEN"))

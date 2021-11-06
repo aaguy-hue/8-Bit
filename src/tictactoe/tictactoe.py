@@ -11,10 +11,13 @@ GNU General Public License for more details.
 """
 
 ##### IMPORTS #####
+import json
 import os
 import sys
 import io
-import json
+import base64
+import hashlib
+import requests
 from typing import List
 from PIL import Image, ImageFont, ImageDraw
 
@@ -160,8 +163,8 @@ class Game:
             return False
 
     
-    def generate_image(self, winning_tiles=None) -> bytes:
-        """Returns bytes in a png format for the board.
+    def generate_image(self, winning_tiles=None) -> str:
+        """Returns a string with a url for the board.
         
         Optionally takes in the winning tiles, passed in from game_results()."""
         # Thank god for this: https://stackoverflow.com/a/45041002
@@ -181,10 +184,30 @@ class Game:
         [[img.paste(x, (Game.TILE_BASE_COORDS[0]+100*(i%3), Game.TILE_BASE_COORDS[1]+100*(i//3))) if token == 1 else img.paste(o, (Game.TILE_BASE_COORDS[0]+100*(i%3), Game.TILE_BASE_COORDS[1]+100*(i//3))) if token == 2 else drawing.text(((i%3)*100 +25, (i//3)*100 -10), str(i+1), (128,128,128), font=font), img.paste(star, (Game.STAR_BASE_COORDS[0]+100*(i%3), Game.STAR_BASE_COORDS[1]+100*(i//3))) if i in winning_tiles else None] for i, token in enumerate(self.board)]
         
         with io.BytesIO() as output:
-            img.save(output, format="PNG")
+            # Remove the alpha channel so that the image can be saved as JPG, which is much smaller than PNG
+            img = img.convert('RGB')
+            # Save the image as JPG to the output BytesIO
+            img.save(output, format="JPEG")
+            # Move the pointer to the beginning of the BytesIO
             output.seek(0)
-            val = output.getvalue()
-            return val
+
+            with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_boards.json"), "r") as f:
+                decodeval = base64.b64encode(output.getvalue()).decode('ascii')
+                url = json.load(f).get(decodeval, None)
+
+            if url is None:
+                response = requests.post(
+                    "https://8bit.apmmpa.repl.co/upload_image",
+                    files={"image": output},
+                    data={"password": hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest()}
+                )
+                response.raise_for_status()
+                url = response.json()['url']
+
+                with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_boards.json"), "w") as f:
+                    json.dump({decodeval: url}, f)
+            
+            return url
     
     def move_valid(self, index) -> bool:
         """Returns a bool stating whether a move is valid or not"""
