@@ -40,7 +40,7 @@ After you've got all your dependencies, you just have one more step before you c
  
  - 8BIT_TOKEN (the token of your discord bot you will test this on, go to [discord.com/developers](https://discord.com/developers) to do this)
  - IMAGE_API_PASSWORD (this is a password that will be used for the image api, it makes sure that people don't start using your api)
- - FLASK_SECRET (generate this with `python -c 'import os; print(os.urandom(16))'`, it's for the purpose of keeping the website with the image api secure)
+ - FLASK_SECRET (generate this by typing `python -c 'import os; print(os.urandom(16))'` in your terminal, it's for the purpose of keeping the website with the image api secure)
 
 On Windows, you can do `SET VARIABLE=VALUE` in your terminal to set temporary environment variables. Unfortunately, you will have to do more steps to make it persistent. Go into Settings -> System -> About, then click "Advanced system settings" under the "Related settings" section. This will take you to the "Advanced" tab of System Properties. In the window that popped up, press the "Environment Variables" button towards the bottom. You will likely want to set the environment variable as a user variable, but putting it as a system variable works too. Press the "new" button, and the rest is easy to do.
 
