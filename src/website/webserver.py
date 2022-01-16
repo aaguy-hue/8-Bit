@@ -5,13 +5,13 @@ from threading import Thread
 from pathlib import Path
 import os
 
-UPLOAD_FOLDER = Path.joinpath(Path(__file__).parent.absolute(), 'media')
 ALLOWED_EXTENSIONS = {
     "png" # png has an alpha channel
 }
 
 app = Flask('')
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET')
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET').encode("latin-1")
+app.config['UPLOAD_FOLDER'] = Path.joinpath(Path(__file__).parent.absolute(), 'media')
 
 def validate_imagename(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -36,7 +36,7 @@ def upload_image():
 
     if password == hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest():
         if validate_imagename(image.filename):
-            image.save(os.path.join(UPLOAD_FOLDER), secure_filename(image.filename))
+            image.save(os.path.join(app.config['UPLOAD_FOLDER']), secure_filename(image.filename))
             return "Success!", 200
         else:
             return "Invalid Filename", 400
