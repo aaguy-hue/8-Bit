@@ -1,10 +1,20 @@
 import hashlib
 from flask import Flask, send_from_directory, render_template, request, jsonify
+from werkzeug.utils import secure_filename
 from threading import Thread
+from pathlib import Path
 import os
+
+UPLOAD_FOLDER = Path.joinpath(Path(__file__).parent.absolute(), 'media')
+ALLOWED_EXTENSIONS = {
+    "png" # png has an alpha channel
+}
 
 app = Flask('')
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET')
+
+def validate_imagename(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/')
 def main():
@@ -25,11 +35,13 @@ def upload_image():
     image = request.files['image']
 
     if password == hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest():
-        print('gud')
+        if validate_imagename(image.filename):
+            image.save(os.path.join(UPLOAD_FOLDER), secure_filename(image.filename))
+            return "Success!", 200
+        else:
+            return "Invalid Filename", 400
     else:
-        print('oop')
-
-    raise NotImplementedError("Development of the image API is an ongoing effort.")
+        return "Invalid Password", 400
 
 def run(debug=False):
     if debug:
