@@ -10,6 +10,10 @@ The following is mostly just a guideline to help you contribute to the bot, whil
 - [Running the Bot](#running-the-bot)
   - [Getting Dependencies](#getting-dependencies)
   - [Setting Environment Variables](#setting-environment-variables)
+    - [Windows](#windows)
+      - [Temporary Environment Variables](#temporary-environment-variables)
+      - [Persistent Environment Variables](#persistent-environment-variables)
+    - [MacOS/Linux](#macos-linux)
   - [Finally Running It!](#finally-running-it)
 - [Finding what to Develop](#finding-what-to-develop)
 - [Submitting Changes](#submitting-changes)
@@ -25,12 +29,14 @@ Quite frankly, please just treat everyone with respect and kindness. Do not get 
 
 You can get the dependencies automatically by going to the path of the project in your terminal, then running `python -m pip install -r requirements.txt`.
 
-If you have any suggestions on adding/removing a dependency, then please make an issue. Ideally, the bot should be as lightweight as possible, and if you want to suggest swapping out or removing a dependency for that, then I'm up for it. If you want to add one, please explain why the bot would benefit from the added dependency.
+If you have any suggestions on adding/removing a dependency, then please make an issue. 
+
+Ideally, the bot should be as lightweight and efficient as possible.
 
 The bot depends on the following things:
  - [Python 3.6 or newer](https://www.python.org/downloads/) (programming language)
  - [discord.py](https://github.com/Rapptz/discord.py) (interface to Discord API)
- - [discord-components](https://gitlab.com/discord.py-components/discord.py-components) (library which allows for use of buttons and dropdowns, which will be in discord.py in a few months)
+ - [discord-components](https://gitlab.com/discord.py-components/discord.py-components) (library which extends discord.py to allow for use of buttons and dropdowns)
  - [Pillow](https://github.com/python-pillow/Pillow) (used to generate images)
  - [Flask](https://flask.palletsprojects.com/en/2.0.x/) (used as a web server for the images)
 
@@ -38,13 +44,28 @@ The bot depends on the following things:
 
 After you've got all your dependencies, you just have one more step before you can finally get started. You will need to set the following environment variables:
  
- - BOT_TOKEN (the token of your discord bot you will test this on, go to [discord.com/developers](https://discord.com/developers) to do this)
- - IMAGE_API_PASSWORD (this is a password that will be used for the image api, it makes sure that people don't start using your api)
- - FLASK_SECRET (generate this by typing `python -c "import os; print(os.urandom(16).decode('latin-1'))"` in your terminal, it's for the purpose of keeping the website with the image api secure)
+ - BOT_TOKEN
+   - The token of your discord bot you will test this on, go to [discord.com/developers](https://discord.com/developers) to do this
+ - IMAGE_API_PASSWORD
+   - This is a password that will be used for the image api, it makes sure that people don't start using your api
+ - FLASK_SECRET
+   - Generate this by typing `python -c "import os; print(os.urandom(16).decode('latin-1'))"` in your terminal, it's for the purpose of keeping the website with the image api secure
+ - UPLOAD_URL
+   - The url for the image API, in the format https://website.com
 
-On Windows, you can do `SET VARIABLE=VALUE` in your terminal to set temporary environment variables. Unfortunately, you will have to do more steps to make it persistent. Go into Settings -> System -> About, then click "Advanced system settings" under the "Related settings" section. This will take you to the "Advanced" tab of System Properties. In the window that popped up, press the "Environment Variables" button towards the bottom. You will likely want to set the environment variable as a user variable, but putting it as a system variable works too. Press the "new" button, and the rest is easy to do.
+#### Windows
+##### Temporary Environment Variables
+In your terminal, type in `SET VARIABLE=VALUE` to set the environment variable for the terminal session.
 
-On *nix systems like MacOS and Linux, you can do `export VARIABLE=VALUE` to set environment variables.
+##### Persistent Environment Variables
+1. Go into Settings -> System -> About, then click "Advanced system settings" under the "Related settings" section
+2. In the window that popped up, press the "Environment Variables" button towards the bottom
+3. Under "User Variables", press new, and put in the key and value
+4. Repeat step 3 for all of the environment variables
+5. Reboot your computer
+
+#### MacOS/Linux
+To set environment variables, type `export VARIABLE=VALUE` in a terminal.
 
 
 ### Finally Running It!

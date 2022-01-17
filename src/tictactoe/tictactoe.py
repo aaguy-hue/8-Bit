@@ -22,6 +22,7 @@ from typing import List
 from PIL import Image, ImageFont, ImageDraw
 
 sys.setrecursionlimit(4000)
+UPLOAD_URL = os.getenv("UPLOAD_URL")
 
 class Game:
     # Scoring for AI
@@ -190,24 +191,24 @@ class Game:
             img.save(output, format="JPEG")
             # Move the pointer to the beginning of the BytesIO
             output.seek(0)
-
+            
             with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_boards.json"), "r") as f:
                 decodeval = base64.b64encode(output.getvalue()).decode('ascii')
                 url = json.load(f).get(decodeval, None)
 
             if url is None:
                 response = requests.post(
-                    "https://8bit.apmmpa.repl.co/upload_image",
+                    UPLOAD_URL + "/upload-image",
                     files={"image": output},
                     data={"password": hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest()}
                 )
                 response.raise_for_status()
-                url = response.json()['url']
+                url = response.text
 
                 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_boards.json"), "w") as f:
                     json.dump({decodeval: url}, f)
             
-            return url
+            return UPLOAD_URL + url if response.ok else False
     
     def move_valid(self, index) -> bool:
         """Returns a bool stating whether a move is valid or not"""

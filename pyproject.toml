@@ -1,0 +1,18 @@
+[tool.poetry]
+name="8-Bit"
+version="1.0.0"
+description="A fun discord bot for playing games!"
+license="GPL-3.0-only"
+authors=[
+  "Aadit Mathur"
+]
+readme="README.md"
+repository="https://github.com/aaguy-hue/8-Bit"
+
+[tool.poetry.dependencies]
+python="^3.8"
+discord = "^1.7.3"
+Pillow = "^9.0.0"
+discord-components = "^2.1.2"
+Flask = "^2.0.2"
+requests = "^2.27.1"

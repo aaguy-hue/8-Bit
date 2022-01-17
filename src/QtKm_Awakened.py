@@ -16,7 +16,6 @@ import asyncio
 import datetime
 import website
 import discord
-# import logging
 from discord_components import DiscordComponents
 from pathlib import Path
 from discord.ext import commands
@@ -167,4 +166,3 @@ if __name__ == '__main__':
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
-

@@ -1,14 +1,18 @@
 import hashlib
 from flask import Flask, send_from_directory, render_template, request, jsonify
-from werkzeug.utils import secure_filename
 from threading import Thread
 from pathlib import Path
+import string
+import random
 import os
 
+CHARACTERS = string.ascii_letters + string.digits
 CURRENT_PATH = Path(__file__).parent.absolute()
 TEMPLATE_FOLDER = Path.joinpath(CURRENT_PATH, "templates")
 ALLOWED_EXTENSIONS = {
-    "png" # png has an alpha channel
+    "jpeg",
+    "jpg",
+    "jfif"
 }
 
 app = Flask('', template_folder=TEMPLATE_FOLDER)
@@ -23,8 +27,14 @@ def get_resource_path(resource_type: str, resource: str):
         raise NotImplementedError
 
 
-def validate_imagename(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def random_string(length=50):
+    return ''.join(random.choices(CHARACTERS, k=length))
+
+
+@app.route('/uploads/<filename>')
+def get_image(filename):
+    return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
+
 
 @app.route('/')
 def main():
@@ -44,12 +54,10 @@ def upload_image():
     password = request.form.to_dict()['password']
     image = request.files['image']
 
-    if password == hashlib.sha3_512(os.environ["IMAGE_API_PASSWORD"].encode()).hexdigest():
-        if validate_imagename(image.filename):
-            image.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image.filename)))
-            return "Success!", 200
-        else:
-            return "Invalid Filename", 400
+    if password == hashlib.sha3_512(os.environ["IMAGE_API_PASSWORD"].encode("latin-1")).hexdigest():
+        filename = random.random_string()+".jpeg"
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return f"/uploads/{filename}", 200
     else:
         return "Invalid Password", 400
 
