@@ -179,6 +179,7 @@ class Connect4(commands.Cog):
                 # Send a message that the player won, and break out of the loop.
                 await ctx.send(f"Whoaaaaa {gameData[currentPlayer.name].mention} won!")
                 self.games.endGame(game)
+                choose_column.set_disabled(True)
                 return
             elif result == False:
                 numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
@@ -188,8 +189,9 @@ class Connect4(commands.Cog):
                 embed.add_field(name=f"Tie!", value=boardMessage, inline=False)
                 await interaction.respond(type=7, embed=embed)
 
+                await ctx.send("Tie game!")
                 self.games.endGame(game)
-                await ctx.send("BRUUUUHHHH. Neither of you won, you somehow managed to fill up the board.")
+                choose_column.set_disabled(True)
                 return
             elif result is None:
                 numbers = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
