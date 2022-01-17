@@ -1,3 +1,5 @@
 .vscode/
 data/prefixes.json
 data/userData.json
+
+__pycache__/**

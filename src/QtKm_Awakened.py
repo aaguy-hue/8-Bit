@@ -27,10 +27,10 @@ async def run():
     it's recommended that you create it here and pass it to the bot as a kwarg.
     """
 
-    website.run_site()
+    website.run_site(debug=False)
     bot = Bot(description="A fun bot to liven up a server!")
     try:
-        await bot.start(os.getenv("8BIT_TOKEN"))
+        await bot.start(os.environ["BOT_TOKEN"])
     except KeyboardInterrupt:
         await bot.logout()
 

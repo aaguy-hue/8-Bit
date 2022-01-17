@@ -5,13 +5,23 @@ from threading import Thread
 from pathlib import Path
 import os
 
+CURRENT_PATH = Path(__file__).parent.absolute()
+TEMPLATE_FOLDER = Path.joinpath(CURRENT_PATH, "templates")
 ALLOWED_EXTENSIONS = {
     "png" # png has an alpha channel
 }
 
-app = Flask('')
-app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET').encode("latin-1")
-app.config['UPLOAD_FOLDER'] = Path.joinpath(Path(__file__).parent.absolute(), 'media')
+app = Flask('', template_folder=TEMPLATE_FOLDER)
+app.config['SECRET_KEY'] = os.environ['FLASK_SECRET'].encode("latin-1")
+app.config['UPLOAD_FOLDER'] = Path.joinpath(CURRENT_PATH, 'media')
+
+def get_resource_path(resource_type: str, resource: str):
+    """Utility function to get absolute filenames"""
+    if resource_type == "image":
+        return os.path.join(app.config['UPLOAD_FOLDER'], resource)
+    else:
+        raise NotImplementedError
+
 
 def validate_imagename(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -34,21 +44,21 @@ def upload_image():
     password = request.form.to_dict()['password']
     image = request.files['image']
 
-    if password == hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest():
+    if password == hashlib.sha3_512(os.environ["IMAGE_API_PASSWORD"].encode()).hexdigest():
         if validate_imagename(image.filename):
-            image.save(os.path.join(app.config['UPLOAD_FOLDER']), secure_filename(image.filename))
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], secure_filename(image.filename)))
             return "Success!", 200
         else:
             return "Invalid Filename", 400
     else:
         return "Invalid Password", 400
 
-def run(debug=False):
+def run(debug):
     if debug:
-        app.run(port=8080, debug=False)
+        app.run(port=8080, debug=True)
     else:
         app.run(host="0.0.0.0", port=8080, debug=False)
 
-def run_site():
-    server = Thread(target=run)
+def run_site(debug):
+    server = Thread(target=lambda debug=debug: run(debug))
     server.start()

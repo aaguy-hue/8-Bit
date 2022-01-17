@@ -38,7 +38,7 @@ The bot depends on the following things:
 
 After you've got all your dependencies, you just have one more step before you can finally get started. You will need to set the following environment variables:
  
- - 8BIT_TOKEN (the token of your discord bot you will test this on, go to [discord.com/developers](https://discord.com/developers) to do this)
+ - BOT_TOKEN (the token of your discord bot you will test this on, go to [discord.com/developers](https://discord.com/developers) to do this)
  - IMAGE_API_PASSWORD (this is a password that will be used for the image api, it makes sure that people don't start using your api)
  - FLASK_SECRET (generate this by typing `python -c "import os; print(os.urandom(16).decode('latin-1'))"` in your terminal, it's for the purpose of keeping the website with the image api secure)
 
