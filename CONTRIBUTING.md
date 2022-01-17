@@ -13,7 +13,7 @@ The following is mostly just a guideline to help you contribute to the bot, whil
     - [Windows](#windows)
       - [Temporary Environment Variables](#temporary-environment-variables)
       - [Persistent Environment Variables](#persistent-environment-variables)
-    - [MacOS/Linux](#macos-linux)
+    - [MacOS/Linux](#macoslinux)
   - [Finally Running It!](#finally-running-it)
 - [Finding what to Develop](#finding-what-to-develop)
 - [Submitting Changes](#submitting-changes)
