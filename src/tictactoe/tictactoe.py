@@ -22,7 +22,7 @@ from typing import List
 from PIL import Image, ImageFont, ImageDraw
 
 sys.setrecursionlimit(4000)
-UPLOAD_URL = os.getenv("UPLOAD_URL")
+UPLOAD_URL = os.environ["UPLOAD_URL"]
 
 class Game:
     # Scoring for AI
@@ -203,21 +203,16 @@ class Game:
                     data={"password": hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest()}
                 )
                 response.raise_for_status()
-                url = response.text
+                url = UPLOAD_URL + response.text
 
                 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cached_boards.json"), "w") as f:
                     json.dump({decodeval: url}, f)
             
-            return UPLOAD_URL + url if response.ok else False
+            return url if response.ok else False
     
     def move_valid(self, index) -> bool:
         """Returns a bool stating whether a move is valid or not"""
         return not self.board[index-1]
-    
-    @property
-    def emptyIndexies(self) -> List[int]:
-        """Returns a list of indexes for the available spots"""
-        return [x+1 for x in range(9) if self.board[x] == 0]
     
     async def best_move(self, player: int, other_player) -> int:
         # https://www.freecodecamp.org/news/how-to-make-your-tic-tac-toe-game-unbeatable-by-using-the-minimax-algorithm-9d690bad4b37/
@@ -225,16 +220,16 @@ class Game:
     
     async def minimax(self, player, other_player):
         # available spots
-        availSpots = self.emptyIndexies
+        availSpots = [x+1 for x in range(9) if self.board[x] == 0]
 
         # checks for the terminal states such as win, lose, and tie 
         # and returning a value accordingly
         if self.winning(other_player):
-            return -10
+            return {"score": -10}
         elif self.winning(player):
-            return 10
+            return {"score": 10}
         elif len(availSpots) == 0:
-            return 0
+            return {"score": 0}
         
         the_moves = []
         for j in availSpots:
@@ -244,15 +239,15 @@ class Game:
 
             the_moves.append({
                 "index": j,
-                "score": await self.minimax(player, other_player)
+                "score": (await self.minimax(player, other_player))["score"]
             })
 
             self.undo_move_index(j)
         
         scoreLambda = lambda x: x["score"]
         if (not self.move_count%2 == player):
-            the_best_move = max(the_moves, key=scoreLambda)["index"]
+            the_best_move = max(the_moves, key=scoreLambda)
         else:
-            the_best_move = min(the_moves, key=scoreLambda)["index"]
+            the_best_move = min(the_moves, key=scoreLambda)
         
         return the_best_move

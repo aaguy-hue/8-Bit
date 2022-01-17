@@ -133,7 +133,7 @@ class TicTacToe(commands.Cog):
                 return
         
         
-        image = game.generate_image()
+        image_url = game.generate_image()
         embed = discord.Embed(
             title="Tic Tac Toe",
             description=f"❌ {playerkeys[0]} | ⭕ {playerkeys[1]}"
@@ -142,7 +142,7 @@ class TicTacToe(commands.Cog):
             value="** **",
             inline=False
         ).set_image(
-            url=image['data']['link']
+            url=image_url
         ).set_footer(
             text="Made by DJ Snowball",
             icon_url=self.bot.icon_url
@@ -193,14 +193,14 @@ class TicTacToe(commands.Cog):
                 
                 results = game.game_results()
                 
-                image = game.generate_image(results)
+                image_url = game.generate_image(results)
 
                 if results:
                     embed.add_field(
                         name=f"{playerkeys[not game.move_count%2]} wins!",
                         value="** **",
                         inline=False
-                    ).set_image(url=image['data']['link']).remove_field(0)
+                    ).set_image(url=image_url).remove_field(0)
                     await gameMessage.edit(embed=embed)
 
                     self.games.endGame(game)
@@ -210,7 +210,7 @@ class TicTacToe(commands.Cog):
                         name=f"🐈Tie!",
                         value="** **",
                         inline=False
-                    ).set_image(url=image['data']['link']).remove_field(0)
+                    ).set_image(url=image_url).remove_field(0)
                     await gameMessage.edit(embed=embed)
 
                     self.games.endGame(game)
@@ -220,7 +220,7 @@ class TicTacToe(commands.Cog):
                         name=f"{playerkeys[game.move_count%2]}'s turn!",
                         value="** **",
                         inline=False
-                    ).set_image(url=image['data']['link']).remove_field(0)
+                    ).set_image(url=image_url).remove_field(0)
                     await gameMessage.edit(embed=embed)
     
     @ttt.command(name="ai", aliases=["bot", "singleplayer", "oneplayer", "single", "one"], pass_context=True, invoke_without_command=True)
