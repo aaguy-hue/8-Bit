@@ -79,7 +79,7 @@ class Connect4(commands.Cog):
                 style=4
             )
         ]
-        choose_column = [discord_components.Select(
+        choose_column = discord_components.Select(
             placeholder="Choose a column...",
             options=[
                 discord_components.SelectOption(label="Column 1", value="1"),
@@ -90,7 +90,7 @@ class Connect4(commands.Cog):
                 discord_components.SelectOption(label="Column 6", value="6"),
                 discord_components.SelectOption(label="Column 7", value="7"),
             ]
-        )]
+        )
 
         message = await ctx.send(
             f"YOU, {opponent.mention} have been challenged to connect four by {ctx.author.mention}. Will you have the courage to face them?",
@@ -136,7 +136,7 @@ class Connect4(commands.Cog):
         embed.add_field(name=f"{ctx.author.display_name}'s turn!", value=boardMessage, inline=False)
         gameMessage = await ctx.send(
             embed=embed,
-            components=choose_column
+            components=[choose_column]
         )
         gameMessage = discord.utils.get(self.bot.cached_messages, id=gameMessage.id)
         
@@ -149,7 +149,7 @@ class Connect4(commands.Cog):
                 col = connect4.get_optimal_move(game, isMaximizing=False)
             else:
                 try:
-                    interaction = await self.bot.wait_for("select_option", check=self.interaction_check(gameData[currentPlayer.name].id, choose_column[0].id), timeout=120.0)
+                    interaction = await self.bot.wait_for("select_option", check=self.interaction_check(gameData[currentPlayer.name].id, choose_column.id), timeout=120.0)
                     col = int(interaction.values[0])
                 except asyncio.TimeoutError:
                     await ctx.send(f"Oh well I guess {gameData[currentPlayer.name].mention} is just scared.")
