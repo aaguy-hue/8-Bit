@@ -19,13 +19,6 @@ app = Flask('', template_folder=TEMPLATE_FOLDER)
 app.config['SECRET_KEY'] = os.environ['FLASK_SECRET'].encode("latin-1")
 app.config['UPLOAD_FOLDER'] = Path.joinpath(CURRENT_PATH, 'media')
 
-def get_resource_path(resource_type: str, resource: str):
-    """Utility function to get absolute filenames"""
-    if resource_type == "image":
-        return os.path.join(app.config['UPLOAD_FOLDER'], resource)
-    else:
-        raise NotImplementedError
-
 
 def random_string(length=50):
     return ''.join(random.choices(CHARACTERS, k=length))
@@ -60,13 +53,3 @@ def upload_image():
         return f"/uploads/{filename}", 200
     else:
         return "Invalid Password", 400
-
-def run(debug):
-    if debug:
-        app.run(port=8080, debug=True)
-    else:
-        app.run(host="0.0.0.0", port=8080, debug=False)
-
-def run_site(debug):
-    server = Thread(target=lambda debug=debug: run(debug))
-    server.start()

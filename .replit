@@ -1,2 +1,2 @@
 language = "python3"
-run = "python src/QtKm_Awakened.py"
+run = "python src/wsgi.py"

@@ -114,8 +114,9 @@ class Main(commands.Cog):
     async def botinfo(self, ctx):
         daPrefix = (await self.bot.get_prefix_(self.bot, ctx.message))[-1]
         servercount = f"I'm in {len(self.bot.guilds)} servers!\nIf you want to increase this number, run `{daPrefix}invite` and press the link to invite me to more servers!"
-        changelog = " - Connect Four now has confirmation messages like tic tac toe\n - Tic Tac Toe AI has been released!"
-        comingsoon = " - Tic tac toe with discord components (buttons)\n - 2D Minecraft Clone"
+        changelog = " - Fixes to Tic Tac Toe\n - Improvements to Tic Tac Toe AI"
+        # 2D Minecraft Clone has been removed from coming soon due to me losing interest in it
+        comingsoon = " - Tic tac toe with discord components (select box)"
         
         embed = discord.Embed(
             title="Bot Information"

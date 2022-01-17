@@ -14,7 +14,6 @@ import os
 import json
 import asyncio
 import datetime
-import website
 import discord
 from discord_components import DiscordComponents
 from pathlib import Path
@@ -26,7 +25,6 @@ async def run():
     it's recommended that you create it here and pass it to the bot as a kwarg.
     """
 
-    website.run_site(debug=False)
     bot = Bot(description="A fun bot to liven up a server!")
     try:
         await bot.start(os.environ["BOT_TOKEN"])
@@ -85,7 +83,7 @@ class Bot(commands.Bot):
         cogs = [x.stem for x in Path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "cogs")).glob('*.py')]
         for extension in cogs:
             try:
-                self.load_extension(f'cogs.{extension}')
+                self.load_extension(f'bot.cogs.{extension}')
                 print(f'loaded {extension}')
             except Exception as e:
                 error = f'{extension}\n {type(e).__name__} : {e}'
@@ -96,7 +94,7 @@ class Bot(commands.Bot):
         """
         This event is called every time the bot connects or resumes connection.
         """
-        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='g help | Tic Tac Toe AI released!'))
+        await self.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name='g help | Tic Tac Toe Fixed!'))
 
         DiscordComponents(self)
         print('-' * 10)
@@ -163,6 +161,5 @@ class Bot(commands.Bot):
 
 if __name__ == '__main__':
     # logging.basicConfig(level=logging.INFO)
-
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())

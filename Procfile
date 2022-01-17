@@ -1,1 +1,1 @@
-worker: python src/QtKm_Awakened.py
+web: gunicorn --chdir src --bind 0.0.0.0:5000 wsgi:app

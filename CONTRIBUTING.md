@@ -29,6 +29,8 @@ Quite frankly, please just treat everyone with respect and kindness. Do not get 
 
 You can get the dependencies automatically by going to the path of the project in your terminal, then running `python -m pip install -r requirements.txt`.
 
+On Windows, you will run into issues with gunicorn when installing dependencies. As such, change requirements.txt to requirements_windows.txt.
+
 If you have any suggestions on adding/removing a dependency, then please make an issue. 
 
 Ideally, the bot should be as lightweight and efficient as possible.
@@ -70,7 +72,7 @@ To set environment variables, type `export VARIABLE=VALUE` in a terminal.
 
 ### Finally Running It!
 
-Finally, go to the src folder and run the file called "QtKm_Awakened.py". Running this file will run the project. If you have any questions, just message in our [discord server](https://discord.com/invite/VPPrpmQ44q).
+Finally, go to the project root and type in `python src/wsgi.py`. If you have any questions, just message in our [discord server](https://discord.com/invite/VPPrpmQ44q).
 
 ## Finding what to Develop
 
