@@ -55,7 +55,7 @@ def upload_image():
     image = request.files['image']
 
     if password == hashlib.sha3_512(os.environ["IMAGE_API_PASSWORD"].encode("latin-1")).hexdigest():
-        filename = random.random_string()+".jpeg"
+        filename = random_string()+".jpeg"
         image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         return f"/uploads/{filename}", 200
     else:
