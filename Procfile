@@ -1,1 +1,1 @@
-web: gunicorn --chdir src --bind 0.0.0.0:5000 wsgi:app
+web: gunicorn --chdir src wsgi:app
