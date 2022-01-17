@@ -197,11 +197,15 @@ class Game:
                 url = json.load(f).get(decodeval, None)
 
             if url is None:
-                response = requests.post(
-                    UPLOAD_URL + "/upload-image",
-                    files={"image": output},
-                    data={"password": hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest()}
-                )
+                try:
+                    response = requests.post(
+                        UPLOAD_URL + "/upload-image",
+                        files={"image": output},
+                        data={"password": hashlib.sha3_512(os.getenv("IMAGE_API_PASSWORD").encode()).hexdigest()}
+                    )
+                except requests.exceptions.ConnectionError:
+                    # If we made too many requests, we say that it failed
+                    r.status_code = "Connection Refused"
                 response.raise_for_status()
                 url = UPLOAD_URL + response.text
 

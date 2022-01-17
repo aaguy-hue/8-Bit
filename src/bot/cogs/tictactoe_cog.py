@@ -134,6 +134,12 @@ class TicTacToe(commands.Cog):
         
         
         image_url = game.generate_image()
+        if not image_url:
+            # If we failed to generate the image, end the game
+            self.games.endGame(game)
+            await ctx.send("Something went wrong... please try again later.")
+            return
+
         embed = discord.Embed(
             title="Tic Tac Toe",
             description=f"❌ {playerkeys[0]} | ⭕ {playerkeys[1]}"
@@ -194,6 +200,11 @@ class TicTacToe(commands.Cog):
                 results = game.game_results()
                 
                 image_url = game.generate_image(results)
+                if not image_url:
+                    # If we failed to generate the image, end the game
+                    self.games.endGame(game)
+                    await ctx.send("Unfortunately, we were unable to generate the image. Please try again later.")
+                    return
 
                 if results:
                     embed.add_field(
