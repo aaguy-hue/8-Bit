@@ -1,9 +1,9 @@
-import bot
-import asyncio
 from website import app
+import threading
+import bot
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(bot.run())
+bot_thread = threading.Thread(target=bot.run, name="Discord Bot")
+bot_thread.start()
 
 if __name__ == "__main__":
     app.run()

@@ -19,9 +19,13 @@ from discord_components import DiscordComponents
 from pathlib import Path
 from discord.ext import commands
 
-async def run():
+def run():
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(_run())
+
+async def _run():
     """
-    Where the bot and website gets started. If you wanted to create an database connection pool or other session for the bot to use,
+    Where the bot gets started. If you wanted to create an database connection pool or other session for the bot to use,
     it's recommended that you create it here and pass it to the bot as a kwarg.
     """
 
