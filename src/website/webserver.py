@@ -1,6 +1,5 @@
 import hashlib
 from flask import Flask, send_from_directory, render_template, request, jsonify
-from threading import Thread
 from pathlib import Path
 import string
 import random
@@ -9,11 +8,6 @@ import os
 CHARACTERS = string.ascii_letters + string.digits
 CURRENT_PATH = Path(__file__).parent.absolute()
 TEMPLATE_FOLDER = Path.joinpath(CURRENT_PATH, "templates")
-ALLOWED_EXTENSIONS = {
-    "jpeg",
-    "jpg",
-    "jfif"
-}
 
 app = Flask('', template_folder=TEMPLATE_FOLDER)
 app.config['SECRET_KEY'] = os.environ['FLASK_SECRET'].encode("latin-1")
