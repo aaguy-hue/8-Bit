@@ -2,7 +2,7 @@
 
 [![support server](https://discord.com/api/guilds/770895120886661130/embed.png)](https://discord.com/invite/VPPrpmQ44q)
 
-**NOTICE: Discord.py, a major dependency of the bot has stopped development. As such, this bot may be prone to breaking changes by Discord in future.**
+**NOTICE: Heroku has removed their free tier. As a student, I am unable to host the bot and development of this bot is suspended.**
 
 A discord bot to have fun with friends! The bot is hosted on heroku, use this link to invite the bot: https://dsc.gg/8bit.
 
